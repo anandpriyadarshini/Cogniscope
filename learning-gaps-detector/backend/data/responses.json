@@ -1,0 +1,44 @@
+[
+  {
+    "student_id": "student1",
+    "quiz_id": "quiz_1767722730170",
+    "attempts": [
+      {
+        "question_id": 1,
+        "selected_answer": 1,
+        "time_taken": 22.634,
+        "confidence": 3,
+        "is_correct": true
+      },
+      {
+        "question_id": 2,
+        "selected_answer": 1,
+        "time_taken": 22.104,
+        "confidence": 5,
+        "is_correct": true
+      },
+      {
+        "question_id": 3,
+        "selected_answer": 1,
+        "time_taken": 7.901,
+        "confidence": 5,
+        "is_correct": true
+      },
+      {
+        "question_id": 4,
+        "selected_answer": 1,
+        "time_taken": 12.749,
+        "confidence": 2,
+        "is_correct": true
+      },
+      {
+        "question_id": 5,
+        "selected_answer": 1,
+        "time_taken": 8.518,
+        "confidence": 1,
+        "is_correct": true
+      }
+    ],
+    "timestamp": "2026-01-06T18:05:30.170000+00:00"
+  }
+]

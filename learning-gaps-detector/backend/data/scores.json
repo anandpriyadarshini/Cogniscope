@@ -1,0 +1,38 @@
+[
+  {
+    "student_id": "student1",
+    "quiz_id": "quiz_1767722730170",
+    "overall_score": 0.0375,
+    "overall_risk": "safe",
+    "concept_gaps": [
+      {
+        "concept": "Concept 1",
+        "gap_score": 0.0,
+        "risk_level": "safe",
+        "indicators": [
+          "Performance within expected range"
+        ]
+      },
+      {
+        "concept": "Concept 2",
+        "gap_score": 0.0,
+        "risk_level": "safe",
+        "indicators": [
+          "Performance within expected range"
+        ]
+      },
+      {
+        "concept": "Concept 0",
+        "gap_score": 0.2,
+        "risk_level": "safe",
+        "indicators": [
+          "Fast responses with high accuracy (potential AI)"
+        ]
+      }
+    ],
+    "timestamp": "2026-01-06T23:35:30.179543",
+    "recommendations": [
+      "Continue current learning approach - performance looks good"
+    ]
+  }
+]

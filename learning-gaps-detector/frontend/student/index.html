@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Assessment - AI-Resilient Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Learning Assessment Quiz</h1>
+            <p class="subtitle">Take your time and answer honestly. This helps us understand your learning better!</p>
+        </header>
+
+        <div id="login-section" class="section">
+            <h2>Welcome!</h2>
+            <div class="form-group">
+                <label for="student-id">Enter your Student ID:</label>
+                <input type="text" id="student-id" placeholder="e.g., student_123" required>
+                <button id="start-quiz-btn" class="btn primary">Start Quiz</button>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="section hidden">
+            <div class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <span id="question-counter">Question 1 of 5</span>
+                </div>
+                <div class="timer">
+                    <span id="question-timer">⏱️ 0s</span>
+                </div>
+            </div>
+
+            <div id="question-container">
+                <div class="question-card">
+                    <h3 id="question-text">Question will appear here...</h3>
+                    <div id="options-container" class="options">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="confidence-section">
+                    <h4>How confident are you in your answer?</h4>
+                    <div class="confidence-slider-container">
+                        <input type="range" id="confidence-slider" min="1" max="5" value="3" class="confidence-slider">
+                        <div class="confidence-labels">
+                            <span>Not Sure</span>
+                            <span>Very Confident</span>
+                        </div>
+                        <div id="confidence-value" class="confidence-value">Confidence: 3/5</div>
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button id="submit-answer-btn" class="btn primary" disabled>Submit Answer</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="completion-section" class="section hidden">
+            <div class="completion-card">
+                <h2>🎉 Quiz Completed!</h2>
+                <p>Thank you for completing the assessment. Your responses are being analyzed...</p>
+                
+                <div id="analysis-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing your learning patterns...</p>
+                </div>
+
+                <div id="results-preview" class="results-preview hidden">
+                    <h3>Quick Results Preview</h3>
+                    <div id="results-content">
+                        <!-- Results will be shown here -->
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="view-detailed-results-btn" class="btn secondary">View Detailed Results</button>
+                    <button id="retake-quiz-btn" class="btn outline">Take Another Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-section" class="section hidden">
+            <div class="error-card">
+                <h3>⚠️ Something went wrong</h3>
+                <p id="error-message">An error occurred. Please try again.</p>
+                <button id="retry-btn" class="btn primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../shared/config.js"></script>
+    <script src="quiz.js"></script>
+</body>
+</html>
