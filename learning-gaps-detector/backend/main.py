@@ -21,6 +21,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files for frontend
+import os
+frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
+app.mount("/student", StaticFiles(directory=os.path.join(frontend_dir, "student"), html=True), name="student")
+app.mount("/teacher", StaticFiles(directory=os.path.join(frontend_dir, "teacher"), html=True), name="teacher")
+app.mount("/shared", StaticFiles(directory=os.path.join(frontend_dir, "shared")), name="shared")
+
 # Initialize the scoring system
 scorer = LearningGapScorer()
 
