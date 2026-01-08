@@ -67,10 +67,6 @@ docker-compose build
 docker-compose up
 ```
 
-The application will be available at **http://localhost:8000**
-
-> **Note**: The container auto-reloads code changes. You can edit files in `backend/` or `frontend/` and the app will update instantly!
-
 ---
 
 ## 📱 How to Use the System
@@ -89,8 +85,8 @@ Open your browser and go to: **http://localhost:8000/login.html**
 
 You'll need to work with both student and teacher roles:
 
-- **Browser/Tab 1**: Student portal (use in private/incognito window)
-- **Browser/Tab 2**: Teacher portal (use in regular window)
+- **Browser/Tab 1**: Student portal 
+- **Browser/Tab 2**: Teacher portal 
 
 ---
 
@@ -108,7 +104,7 @@ You'll need to work with both student and teacher roles:
    - **Name**: `John Smith` (or your name)
    - **Email**: `teacher@school.com` (or any email)
    - **Password**: `secure123`
-   - **Subject**: `Mathematics` (choose from dropdown)
+   - **Subject**: `Mathematics` 
    
 4. Click **"Sign Up"** button
    - **What to expect**: Brief loading message, then redirects to teacher dashboard
@@ -421,23 +417,6 @@ You'll need to work with both student and teacher roles:
 
 ---
 
-## 🔧 Making Changes to the Code
-
-After Docker is running, you can make changes without rebuilding:
-
-### **Edit Backend Code**
-```bash
-# Edit any file in backend/
-# Example: Edit backend/main.py
-# Save the file → App auto-reloads in ~2 seconds
-```
-
-### **Edit Frontend Code**
-```bash
-# Edit any file in frontend/
-# Example: Edit frontend/login.html or index.js
-# Save the file → Browser refresh shows changes (Ctrl+R)
-```
 
 ### **Add Python Dependencies**
 If you add new packages to `requirements.txt`:
