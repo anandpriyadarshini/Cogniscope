@@ -5,8 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Assessment - AI-Resilient Quiz</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 2rem;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .auth-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-header .user-info span {
+            font-size: 0.95rem;
+        }
+
+        .auth-header .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-header .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
 <body>
+    <!-- Authentication Header -->
+    <div class="auth-header">
+        <div class="logo">
+            <span>🧠 Cogniscope</span>
+        </div>
+        <div class="user-info">
+            <span id="user-greeting">Welcome!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1>📚 Learning Assessment Quiz</h1>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Cogniscope - AI-Powered Learning Authenticity & Gap Detection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                <span class="logo-text">Cogniscope</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="login.html" class="nav-link auth-link active">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Authentication Section -->
+    <section class="auth-section full-height">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Role Selector -->
+                <div class="role-selector">
+                    <button class="role-btn active" data-role="student">
+                        <span class="role-icon">👨‍🎓</span>
+                        <span>Student</span>
+                    </button>
+                    <button class="role-btn" data-role="teacher">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span>Teacher</span>
+                    </button>
+                </div>
+
+                <!-- Tab Selector -->
+                <div class="tab-selector">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="signup">Sign Up</button>
+                </div>
+
+                <!-- Login Forms -->
+                <div class="form-container active" data-form="student-login">
+                    <form class="auth-form">
+                        <h3>Student Login</h3>
+                        <div class="form-group">
+                            <label for="student-login-email">Email Address</label>
+                            <input type="email" id="student-login-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-login-password">Password</label>
+                            <input type="password" id="student-login-password" name="password" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="redirectTo('student')">Login as Student</button>
+                        <p class="form-footer">Don't have an account? <a href="#signup" class="switch-tab" data-tab="signup">Sign up here</a></p>
+                    </form>
+                </div>
+
+                <div class="form-container" data-form="student-signup">
+                    <form class="auth-form">
+                        <h3>Student Sign Up</h3>
+                        <div class="form-group">
+                            <label for="student-signup-name">Full Name</label>
+                            <input type="text" id="student-signup-name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-signup-email">Email Address</label>
+                            <input type="email" id="student-signup-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-signup-password">Password</label>
+                            <input type="password" id="student-signup-password" name="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-signup-confirm">Confirm Password</label>
+                            <input type="password" id="student-signup-confirm" name="confirm" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="redirectTo('student')">Create Account & Login</button>
+                        <p class="form-footer">Already have an account? <a href="#login" class="switch-tab" data-tab="login">Login here</a></p>
+                    </form>
+                </div>
+
+                <div class="form-container" data-form="teacher-login">
+                    <form class="auth-form">
+                        <h3>Teacher Login</h3>
+                        <div class="form-group">
+                            <label for="teacher-login-email">Email Address</label>
+                            <input type="email" id="teacher-login-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-login-password">Password</label>
+                            <input type="password" id="teacher-login-password" name="password" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="redirectTo('teacher')">Login as Teacher</button>
+                        <p class="form-footer">Don't have an account? <a href="#signup" class="switch-tab" data-tab="signup">Sign up here</a></p>
+                    </form>
+                </div>
+
+                <div class="form-container" data-form="teacher-signup">
+                    <form class="auth-form">
+                        <h3>Teacher Sign Up</h3>
+                        <div class="form-group">
+                            <label for="teacher-signup-name">Full Name</label>
+                            <input type="text" id="teacher-signup-name" name="name" placeholder="Jane Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-signup-email">Email Address</label>
+                            <input type="email" id="teacher-signup-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-signup-subject">Subject / Department</label>
+                            <input type="text" id="teacher-signup-subject" name="subject" placeholder="e.g., Mathematics, Biology" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-signup-password">Password</label>
+                            <input type="password" id="teacher-signup-password" name="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="teacher-signup-confirm">Confirm Password</label>
+                            <input type="password" id="teacher-signup-confirm" name="confirm" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="redirectTo('teacher')">Create Account & Login</button>
+                        <p class="form-footer">Already have an account? <a href="#login" class="switch-tab" data-tab="login">Login here</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; 2026 Cogniscope. AI-Powered Learning Authenticity & Gap Detection.</p>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#about">About</a>
+                    <a href="login.html">Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>

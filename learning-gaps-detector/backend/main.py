@@ -8,8 +8,13 @@ from datetime import datetime
 
 from models.quiz import StudentSubmission, Question, QuizAttempt
 from models.result import LearningGapResult
+<<<<<<< Updated upstream
 from models.classroom import Classroom, ClassroomCreate, JoinClassroomRequest, ClassroomResponse, ClassroomMember
+=======
+from models.auth import LoginRequest, SignupRequest, AuthResponse
+>>>>>>> Stashed changes
 from logic.scoring import LearningGapScorer
+from logic.auth import AuthManager
 
 app = FastAPI(title="AI-Resilient Learning Gaps Detector", version="1.0.0")
 
@@ -29,9 +34,6 @@ app.mount("/student", StaticFiles(directory=os.path.join(frontend_dir, "student"
 app.mount("/teacher", StaticFiles(directory=os.path.join(frontend_dir, "teacher"), html=True), name="teacher")
 app.mount("/shared", StaticFiles(directory=os.path.join(frontend_dir, "shared")), name="shared")
 
-# Initialize the scoring system
-scorer = LearningGapScorer()
-
 # Data storage paths
 DATA_DIR = "data"
 RESPONSES_FILE = os.path.join(DATA_DIR, "responses.json")
@@ -41,6 +43,12 @@ CLASSROOMS_FILE = os.path.join(DATA_DIR, "classrooms.json")
 
 # Ensure data directory exists
 os.makedirs(DATA_DIR, exist_ok=True)
+
+# Initialize the scoring system
+scorer = LearningGapScorer()
+
+# Initialize auth manager
+auth_manager = AuthManager(DATA_DIR)
 
 # Initialize data files if they don't exist
 for file_path in [RESPONSES_FILE, SCORES_FILE, QUESTIONS_FILE, CLASSROOMS_FILE]:
@@ -93,6 +101,102 @@ SAMPLE_QUESTIONS = [
 async def root():
     return {"message": "AI-Resilient Learning Gaps Detector API"}
 
+
+# ==================== AUTHENTICATION ENDPOINTS ====================
+
+@app.post("/api/auth/signup")
+async def signup(request: SignupRequest):
+    """Register a new user (Student or Teacher)."""
+    try:
+        result = auth_manager.register_user(
+            name=request.name,
+            email=request.email,
+            password=request.password,
+            role=request.role,
+            subject=request.subject
+        )
+        
+        if result["success"]:
+            return AuthResponse(
+                success=True,
+                message=result["message"],
+                user=result["user"],
+                token=result["token"]
+            )
+        else:
+            raise HTTPException(status_code=400, detail=result["message"])
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Signup error: {str(e)}")
+
+
+@app.post("/api/auth/login")
+async def login(request: LoginRequest):
+    """Login a user (Student or Teacher) with role validation."""
+    try:
+        result = auth_manager.login_user(
+            email=request.email,
+            password=request.password,
+            role=request.role
+        )
+        
+        if result["success"]:
+            return AuthResponse(
+                success=True,
+                message=result["message"],
+                user=result["user"],
+                token=result["token"]
+            )
+        else:
+            # Include registered_role in error response if role mismatch
+            registered_role = result.get("registered_role")
+            error_detail = result["message"]
+            
+            if registered_role:
+                error_detail += f" (This account is registered as {registered_role})"
+            
+            raise HTTPException(status_code=401, detail=error_detail)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Login error: {str(e)}")
+
+
+@app.get("/api/auth/verify/{token}")
+async def verify_token(token: str):
+    """Verify if a token is valid."""
+    try:
+        session = auth_manager.verify_token(token)
+        
+        if session:
+            user = auth_manager.get_user_by_id(session["user_id"])
+            return {
+                "valid": True,
+                "user": user,
+                "role": session["role"]
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Verification error: {str(e)}")
+
+
+@app.post("/api/auth/logout/{token}")
+async def logout(token: str):
+    """Logout a user by invalidating their token."""
+    try:
+        if auth_manager.logout_user(token):
+            return {"success": True, "message": "Logged out successfully"}
+        else:
+            raise HTTPException(status_code=400, detail="Logout failed")
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Logout error: {str(e)}")
+
+
+# ==================== QUIZ ENDPOINTS ====================
 
 @app.get("/api/questions")
 async def get_questions():

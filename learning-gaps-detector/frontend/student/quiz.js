@@ -8,8 +8,38 @@ class QuizApp {
         this.questionStartTime = null;
         this.studentId = '';
         this.selectedAnswer = null;
+        this.authToken = null;
+        this.userName = null;
         
+        this.checkAuthentication();
         this.initializeEventListeners();
+    }
+
+    /**
+     * Check if user is authenticated
+     */
+    checkAuthentication() {
+        this.authToken = localStorage.getItem('auth_token');
+        this.userName = localStorage.getItem('user_name');
+        const userRole = localStorage.getItem('user_role');
+
+        if (!this.authToken || userRole !== 'student') {
+            // Redirect to login if not authenticated
+            window.location.href = '../login.html';
+            return;
+        }
+
+        // Update greeting with user name
+        const greeting = document.getElementById('user-greeting');
+        if (greeting && this.userName) {
+            greeting.textContent = `Welcome, ${this.userName}! 👋`;
+        }
+
+        // Use email as student ID if not provided
+        const userEmail = localStorage.getItem('user_email');
+        if (userEmail) {
+            this.studentId = userEmail.split('@')[0];
+        }
     }
 
     initializeEventListeners() {
@@ -322,3 +352,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-focus student ID input
     document.getElementById('student-id').focus();
 });
+
+/**
+ * Logout function (accessible globally)
+ */
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear localStorage
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_email');
+        
+        // Redirect to login
+        window.location.href = '../login.html';
+    }
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "name": "Kanishka Senthilkumar",
+    "email": "kanishkaa1302@gmail.com",
+    "password_hash": "7b8005df8bbacef1434112757ecc3d31eff35e27d4f6480a37fa1181f4e5c60e",
+    "role": "student",
+    "subject": null,
+    "created_at": "2026-01-08T14:58:04.532697",
+    "last_login": "2026-01-08T15:11:15.993988"
+  },
+  {
+    "id": "14af41b8-a803-4762-9c86-622af467e133",
+    "name": "Kanishka Senthilkumar",
+    "email": "theworldisnotgonnaend@gmail.com",
+    "password_hash": "a564456bab8dceaa0bb569849b86a43113520021b2a9cf7f68cef458b7de7ef1",
+    "role": "teacher",
+    "subject": "Maths",
+    "created_at": "2026-01-08T15:17:34.823527",
+    "last_login": null
+  },
+  {
+    "id": "62eb49c7-6c7e-4a53-b4d1-a642bf5afeb9",
+    "name": "Kanishka Senthilkumar",
+    "email": "uha@gmail.com",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "student",
+    "subject": null,
+    "created_at": "2026-01-08T15:19:11.363992",
+    "last_login": null
+  }
+]

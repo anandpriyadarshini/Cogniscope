@@ -1,0 +1,50 @@
+{
+  "89f39a27-0395-4498-97ae-4f73f28e93ee": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T14:58:04.534587"
+  },
+  "573d77da-600e-4432-a454-593325585e95": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:07:17.450642"
+  },
+  "9a55cbab-23c3-40d9-b2f2-e5e004660381": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:07:45.844567"
+  },
+  "c59d6df4-c777-4ba5-94bd-700c6338e1c6": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:10:42.012700"
+  },
+  "a905827c-0407-48b3-8f81-34fc55af0ac6": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:11:02.255735"
+  },
+  "f5a4a0df-06d5-40f8-887a-4e61f66a1e1c": {
+    "user_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+    "email": "kanishkaa1302@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:11:15.996289"
+  },
+  "77cb7b6c-298e-4b4b-a8f4-f05bc178cdf1": {
+    "user_id": "14af41b8-a803-4762-9c86-622af467e133",
+    "email": "theworldisnotgonnaend@gmail.com",
+    "role": "teacher",
+    "created_at": "2026-01-08T15:17:34.825511"
+  },
+  "8bbd2693-cdc2-4857-a9a9-96c3e7f7037f": {
+    "user_id": "62eb49c7-6c7e-4a53-b4d1-a642bf5afeb9",
+    "email": "uha@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:19:11.368067"
+  }
+}
