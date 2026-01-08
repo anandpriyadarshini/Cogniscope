@@ -3,56 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Setup - Learning Gaps Detector</title>
+    <title>Create Quiz - Cogniscope</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+
         .setup-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 2rem;
         }
 
         .setup-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 15px;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
             margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #58CC02, #89E219);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
         .setup-header h1 {
-            font-size: 2rem;
-            margin: 0;
+            font-size: 1.8rem;
+            color: #1a1a1a;
+            font-weight: 700;
         }
 
         .back-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
+            background: white;
+            color: #1CB0F6;
+            border: 2px solid #1CB0F6;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
         }
 
         .back-btn:hover {
-            background: white;
-            color: #667eea;
+            background: #1CB0F6;
+            color: white;
         }
 
         .quiz-form-section {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-group {
@@ -62,27 +103,29 @@
         .form-group label {
             display: block;
             font-weight: 600;
-            color: #2d3748;
+            color: #1a1a1a;
             margin-bottom: 0.5rem;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e5e5e5;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #1CB0F6;
+            box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.1);
         }
 
         .form-group textarea {
@@ -92,28 +135,44 @@
 
         .options-container {
             display: grid;
-            gap: 1rem;
+            gap: 0.8rem;
         }
 
         .option-input-group {
             display: flex;
             gap: 1rem;
             align-items: center;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .option-input-group:hover {
+            background: #fff;
+            border-color: #e5e5e5;
         }
 
         .option-input-group input[type="radio"] {
-            width: auto;
+            width: 20px;
+            height: 20px;
             margin: 0;
+            cursor: pointer;
+            accent-color: #58CC02;
         }
 
         .option-input-group input[type="text"] {
             flex: 1;
+            border: 1px solid #e5e5e5;
+            padding: 0.7rem;
         }
 
         .option-label {
             font-weight: 600;
-            color: #667eea;
-            min-width: 90px;
+            color: #1CB0F6;
+            min-width: 80px;
+            font-size: 0.9rem;
         }
 
         .btn-group {
@@ -123,66 +182,74 @@
         }
 
         .btn {
-            padding: 1rem 2rem;
+            padding: 0.9rem 1.8rem;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #58CC02;
             color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #4CAD02;
+            transform: scale(1.02);
         }
 
         .btn-secondary {
-            background: #48bb78;
-            color: white;
+            background: #fff;
+            color: #1CB0F6;
+            border: 2px solid #1CB0F6;
         }
 
         .btn-secondary:hover {
-            background: #38a169;
-        }
-
-        .btn-danger {
-            background: #f56565;
+            background: #1CB0F6;
             color: white;
         }
 
+        .btn-danger {
+            background: white;
+            color: #FF4B4B;
+            border: 2px solid #FF4B4B;
+        }
+
         .btn-danger:hover {
-            background: #e53e3e;
+            background: #FF4B4B;
+            color: white;
         }
 
         .questions-list {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .questions-list h2 {
-            color: #2d3748;
+            color: #1a1a1a;
             margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
         .question-item {
-            background: #f7fafc;
-            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-left: 4px solid #58CC02;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            transition: all 0.2s ease;
         }
 
         .question-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: white;
         }
 
         .question-header {
@@ -194,8 +261,8 @@
 
         .question-text {
             font-weight: 600;
-            color: #2d3748;
-            font-size: 1.1rem;
+            color: #1a1a1a;
+            font-size: 1rem;
             flex: 1;
         }
 
@@ -207,81 +274,107 @@
         .icon-btn {
             background: none;
             border: none;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
             padding: 0.3rem;
             transition: transform 0.2s ease;
+            border-radius: 6px;
         }
 
         .icon-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.1);
+            background: rgba(28, 176, 246, 0.1);
         }
 
         .question-details {
-            color: #718096;
-            font-size: 0.95rem;
+            color: #6b6b6b;
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
         }
 
         .question-options {
             margin-top: 0.8rem;
-            padding-left: 1rem;
+            padding-left: 0.5rem;
         }
 
         .question-option {
-            padding: 0.3rem 0;
-            color: #4a5568;
+            padding: 0.4rem 0;
+            color: #4a4a4a;
+            font-size: 0.9rem;
         }
 
         .correct-answer {
-            color: #48bb78;
+            color: #58CC02;
             font-weight: 600;
         }
 
         .alert {
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
             margin-bottom: 1rem;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
         .alert-success {
-            background: #c6f6d5;
-            color: #22543d;
-            border-left: 4px solid #48bb78;
+            background: #D4EDDA;
+            color: #155724;
+            border-left: 4px solid #58CC02;
         }
 
         .alert-error {
-            background: #fed7d7;
-            color: #742a2a;
-            border-left: 4px solid #f56565;
+            background: #F8D7DA;
+            color: #721C24;
+            border-left: 4px solid #FF4B4B;
         }
 
         .hidden {
             display: none;
+        }
+
+        .count-badge {
+            background: linear-gradient(135deg, #1CB0F6, #58CC02);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .help-text {
+            color: #9b9b9b;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
         }
     </style>
 </head>
 <body>
     <div class="setup-container">
         <div class="setup-header">
-            <h1>📝 Quiz Setup</h1>
-            <a href="index.html" class="back-btn">← Back to Portal</a>
+            <div class="header-left">
+                <div class="header-icon">📝</div>
+                <h1>Create Quiz</h1>
+            </div>
+            <a href="index.html" class="back-btn">← Back</a>
         </div>
 
         <div id="alert-container"></div>
 
         <!-- Add Question Form -->
         <div class="quiz-form-section">
-            <h2>➕ Add New Question</h2>
+            <h2 class="section-title">✏️ Add New Question</h2>
             <form id="question-form">
                 <div class="form-group">
                     <label for="question-text">Question Text *</label>
-                    <textarea id="question-text" required placeholder="Enter your question here..."></textarea>
+                    <textarea id="question-text" required placeholder="Type your question here..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="concept">Concept/Topic *</label>
+                    <label for="concept">Topic/Concept *</label>
                     <input type="text" id="concept" required placeholder="e.g., Linear Functions, Quadratic Equations">
+                    <div class="help-text">Help organize questions by subject area</div>
                 </div>
 
                 <div class="form-group">
@@ -289,31 +382,31 @@
                     <div class="options-container">
                         <div class="option-input-group">
                             <input type="radio" name="correct-answer" value="0" required>
-                            <span class="option-label">Option A:</span>
-                            <input type="text" id="option-0" required placeholder="Enter option A">
+                            <span class="option-label">Option A</span>
+                            <input type="text" id="option-0" required placeholder="First answer option">
                         </div>
                         <div class="option-input-group">
                             <input type="radio" name="correct-answer" value="1">
-                            <span class="option-label">Option B:</span>
-                            <input type="text" id="option-1" required placeholder="Enter option B">
+                            <span class="option-label">Option B</span>
+                            <input type="text" id="option-1" required placeholder="Second answer option">
                         </div>
                         <div class="option-input-group">
                             <input type="radio" name="correct-answer" value="2">
-                            <span class="option-label">Option C:</span>
-                            <input type="text" id="option-2" required placeholder="Enter option C">
+                            <span class="option-label">Option C</span>
+                            <input type="text" id="option-2" required placeholder="Third answer option">
                         </div>
                         <div class="option-input-group">
                             <input type="radio" name="correct-answer" value="3">
-                            <span class="option-label">Option D:</span>
-                            <input type="text" id="option-3" required placeholder="Enter option D">
+                            <span class="option-label">Option D</span>
+                            <input type="text" id="option-3" required placeholder="Fourth answer option">
                         </div>
                     </div>
-                    <small style="color: #718096; margin-top: 0.5rem; display: block;">Select the radio button next to the correct answer</small>
+                    <div class="help-text">Select the radio button for the correct answer</div>
                 </div>
 
                 <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">💾 Add Question</button>
-                    <button type="button" id="clear-form-btn" class="btn btn-secondary">🔄 Clear Form</button>
+                    <button type="submit" class="btn btn-primary">✓ Add Question</button>
+                    <button type="button" id="clear-form-btn" class="btn btn-secondary">Clear Form</button>
                 </div>
             </form>
         </div>
@@ -321,11 +414,11 @@
         <!-- Questions List -->
         <div class="questions-list">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>📚 Current Quiz Questions (<span id="question-count">0</span>)</h2>
+                <h2>Quiz Questions <span class="count-badge" id="question-count">0</span></h2>
                 <button id="save-quiz-btn" class="btn btn-primary">💾 Save Quiz</button>
             </div>
             <div id="questions-container">
-                <p style="color: #718096; text-align: center; padding: 2rem;">No questions added yet. Add your first question above!</p>
+                <p style="color: #9b9b9b; text-align: center; padding: 3rem;">No questions yet. Add your first question above to get started!</p>
             </div>
         </div>
     </div>

@@ -28,9 +28,8 @@ class QuizApp {
         });
 
         // Completion actions
-        document.getElementById('retake-quiz-btn').addEventListener('click', () => this.resetQuiz());
-        document.getElementById('retry-btn').addEventListener('click', () => this.resetQuiz());
-        document.getElementById('view-detailed-results-btn').addEventListener('click', () => this.viewDetailedResults());
+        document.getElementById('restart-btn').addEventListener('click', () => this.resetQuiz());
+        document.getElementById('view-detailed-results-btn')?.addEventListener('click', () => this.viewDetailedResults());
     }
 
     async startQuiz() {
@@ -212,48 +211,85 @@ class QuizApp {
     }
 
     displayResults(analysis) {
+        console.log('Displaying results:', analysis);
+        
         // Hide loading spinner
-        document.getElementById('analysis-loading').style.display = 'none';
+        const loadingEl = document.getElementById('analysis-loading');
+        if (loadingEl) {
+            loadingEl.style.display = 'none';
+        }
         
         // Show results preview
         const resultsPreview = document.getElementById('results-preview');
         const resultsContent = document.getElementById('results-content');
         
+        if (!resultsPreview || !resultsContent) {
+            console.error('Results elements not found');
+            return;
+        }
+        
+        resultsPreview.style.display = 'block';
+        
         // Generate results HTML
-        const riskClass = `risk-${analysis.overall_risk}`;
+        const riskClass = `risk-${analysis.overall_risk || 'medium'}`;
         const riskIcon = CONFIG.UI.RISK_ICONS[analysis.overall_risk] || '📊';
         
+        // Calculate score
+        const correctAnswers = this.attempts.filter(a => a.is_correct).length;
+        const totalQuestions = this.attempts.length;
+        const scorePercentage = (correctAnswers / totalQuestions * 100).toFixed(1);
+        
         resultsContent.innerHTML = `
-            <div style="margin-bottom: 1rem;">
-                <strong>Overall Assessment:</strong>
-                <span class="risk-indicator ${riskClass}">
-                    ${riskIcon} ${analysis.overall_risk.replace('_', ' ').toUpperCase()}
-                </span>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div class="score-display">${correctAnswers}/${totalQuestions}</div>
+                <p style="color: #6b6b6b; font-size: 1.1rem;">Score: ${scorePercentage}%</p>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong>Gap Score:</strong> ${(analysis.overall_score * 100).toFixed(1)}%
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f5f5f5; border-radius: 10px;">
+                <strong style="font-size: 1.1rem;">📊 Overall Assessment:</strong>
+                <div style="margin-top: 0.5rem;">
+                    <span class="risk-indicator ${riskClass}">
+                        ${riskIcon} ${(analysis.overall_risk || 'medium').replace('_', ' ').toUpperCase()}
+                    </span>
+                </div>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong>Key Findings:</strong>
-                <ul style="margin-left: 1rem; margin-top: 0.5rem;">
-                    ${analysis.recommendations.slice(0, 3).map(rec => `<li>${rec}</li>`).join('')}
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="font-size: 1.1rem;">📈 Gap Score:</strong>
+                <div style="font-size: 1.5rem; font-weight: 600; color: #1CB0F6; margin-top: 0.5rem;">
+                    ${((analysis.overall_score || 0) * 100).toFixed(1)}%
+                </div>
+            </div>
+            
+            ${analysis.recommendations && analysis.recommendations.length > 0 ? `
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="font-size: 1.1rem;">💡 Key Recommendations:</strong>
+                <ul style="margin-left: 1rem; margin-top: 0.5rem; color: #4a4a4a;">
+                    ${analysis.recommendations.slice(0, 3).map(rec => `<li style="margin: 0.5rem 0;">${rec}</li>`).join('')}
                 </ul>
             </div>
+            ` : ''}
             
+            ${analysis.concept_gaps && analysis.concept_gaps.length > 0 ? `
             <div style="margin-bottom: 1rem;">
-                <strong>Concept Performance:</strong>
-                <div style="margin-top: 0.5rem;">
+                <strong style="font-size: 1.1rem;">🎯 Concept Performance:</strong>
+                <div style="margin-top: 0.75rem;">
                     ${analysis.concept_gaps.map(concept => `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-                            <span>${concept.concept}:</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0.5rem; background: #fafafa; border-radius: 8px;">
+                            <span style="font-weight: 500;">${concept.concept}:</span>
                             <span class="risk-indicator risk-${concept.risk_level}">
-                                ${CONFIG.UI.RISK_ICONS[concept.risk_level]} ${concept.risk_level}
+                                ${CONFIG.UI.RISK_ICONS[concept.risk_level] || '📊'} ${concept.risk_level.toUpperCase()}
                             </span>
                         </div>
                     `).join('')}
                 </div>
+            </div>
+            ` : ''}
+            
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #e3f2fd; border-radius: 10px; border-left: 4px solid #1CB0F6;">
+                <p style="margin: 0; color: #1976d2;">
+                    <strong>✨ Great job!</strong> Your teacher will review these results and provide personalized feedback to help you improve.
+                </p>
             </div>
         `;
         

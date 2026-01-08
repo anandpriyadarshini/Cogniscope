@@ -3,148 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Portal - Learning Gaps Detector</title>
+    <title>Teacher Hub - Cogniscope</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+
         .landing-container {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 2rem;
         }
 
-        .landing-header {
+        /* Navigation Bar */
+        .navbar {
+            background: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1CB0F6;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1CB0F6, #58CC02);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #4a4a4a;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #1CB0F6;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-content {
             text-align: center;
-            color: white;
             margin-bottom: 3rem;
         }
 
-        .landing-header h1 {
-            font-size: 3rem;
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            line-height: 1.2;
         }
 
-        .landing-header p {
-            font-size: 1.3rem;
-            opacity: 0.95;
+        .hero-content .subtitle {
+            font-size: 1.1rem;
+            color: #6b6b6b;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
+        /* Cards Container */
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             max-width: 900px;
-            width: 100%;
+            margin: 0 auto;
         }
 
         .option-card {
             background: white;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+            border-radius: 16px;
+            padding: 2rem;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #e5e5e5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1CB0F6, #58CC02);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
         .option-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+            border-color: #1CB0F6;
         }
 
-        .option-icon {
-            font-size: 4rem;
+        .option-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .setup-card .card-icon-wrapper {
+            background: linear-gradient(135deg, #58CC02 0%, #89E219 100%);
+        }
+
+        .analytics-card .card-icon-wrapper {
+            background: linear-gradient(135deg, #1CB0F6 0%, #4C9AFF 100%);
         }
 
         .option-card h2 {
-            font-size: 1.8rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.8rem;
         }
 
         .option-card p {
-            color: #718096;
-            font-size: 1.1rem;
+            color: #6b6b6b;
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1.5rem;
+            flex-grow: 1;
         }
 
-        .option-card .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            border-radius: 10px;
-            cursor: pointer;
+        .card-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .action-btn {
             font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.95rem;
+            color: #1CB0F6;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .option-card .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .arrow-icon {
+            transition: transform 0.3s ease;
         }
 
-        .setup-card {
-            border-top: 5px solid #48bb78;
+        .option-card:hover .arrow-icon {
+            transform: translateX(4px);
         }
 
-        .analytics-card {
-            border-top: 5px solid #667eea;
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #FFF4E6;
+            color: #FF9500;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer Info */
+        .footer-info {
+            text-align: center;
+            padding: 2rem;
+            color: #9b9b9b;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            .landing-header h1 {
+            .hero-content h1 {
                 font-size: 2rem;
-            }
-
-            .landing-header p {
-                font-size: 1.1rem;
             }
 
             .options-container {
                 grid-template-columns: 1fr;
             }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Subtle animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content, .option-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .option-card:nth-child(2) {
+            animation-delay: 0.1s;
         }
     </style>
 </head>
 <body>
     <div class="landing-container">
-        <div class="landing-header">
-            <h1>🎓 Teacher Portal</h1>
-            <p>AI-Resilient Learning Gaps Detector</p>
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <span>Cogniscope</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Help</a>
+                <a href="#" class="nav-link">Settings</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1>Welcome back, Teacher!</h1>
+                <p class="subtitle">Choose how you'd like to help your students succeed today</p>
+            </div>
+
+            <!-- Options Cards -->
+            <div class="options-container">
+                <!-- Quiz Setup Card -->
+                <a href="quiz-setup.html" class="option-card setup-card">
+                    <span class="feature-badge">✨ Easy Setup</span>
+                    <div class="card-icon-wrapper">📝</div>
+                    <h2>Create a Quiz</h2>
+                    <p>Design custom assessments with multiple-choice questions tailored to your curriculum and learning objectives.</p>
+                    <div class="card-action">
+                        <span class="action-btn">Get started <span class="arrow-icon">→</span></span>
+                    </div>
+                </a>
+
+                <!-- Analytics Card -->
+                <a href="dashboard.html" class="option-card analytics-card">
+                    <span class="feature-badge">🔥 Live Data</span>
+                    <div class="card-icon-wrapper">📊</div>
+                    <h2>View Analytics</h2>
+                    <p>Track student performance, identify learning gaps, and detect AI-assisted responses with intelligent insights.</p>
+                    <div class="card-action">
+                        <span class="action-btn">View dashboard <span class="arrow-icon">→</span></span>
+                    </div>
+                </a>
+            </div>
         </div>
 
-        <div class="options-container">
-            <!-- Quiz Setup Option -->
-            <a href="quiz-setup.html" class="option-card setup-card">
-                <div class="option-icon">📝</div>
-                <h2>Set Up Quiz</h2>
-                <p>Create and manage quiz questions for your students. Customize assessments to match your curriculum.</p>
-                <button class="btn">Create Quiz</button>
-            </a>
-
-            <!-- Performance Dashboard Option -->
-            <a href="dashboard.html" class="option-card analytics-card">
-                <div class="option-icon">📊</div>
-                <h2>View Analytics</h2>
-                <p>Monitor student performance, detect learning gaps, and identify AI usage patterns in real-time.</p>
-                <button class="btn">View Dashboard</button>
-            </a>
+        <!-- Footer -->
+        <div class="footer-info">
+            <p>Powered by AI-resilient learning technology</p>
         </div>
     </div>
 </body>

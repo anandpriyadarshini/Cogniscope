@@ -107,5 +107,77 @@
     "recommendations": [
       "Focus remediation on: Concept 1, Concept 0"
     ]
+  },
+  {
+    "student_id": "stud 12",
+    "quiz_id": "quiz_1767868072726",
+    "overall_score": 0.7929999999999999,
+    "overall_risk": "at_risk",
+    "concept_gaps": [
+      {
+        "concept": "Concept 1",
+        "gap_score": 0.8999999999999999,
+        "risk_level": "at_risk",
+        "indicators": [
+          "Low accuracy (0.0%)"
+        ]
+      },
+      {
+        "concept": "Concept 2",
+        "gap_score": 0.8999999999999999,
+        "risk_level": "at_risk",
+        "indicators": [
+          "Low accuracy (0.0%)"
+        ]
+      },
+      {
+        "concept": "Concept 0",
+        "gap_score": 0.8999999999999999,
+        "risk_level": "at_risk",
+        "indicators": [
+          "Low accuracy (0.0%)"
+        ]
+      }
+    ],
+    "timestamp": "2026-01-08T15:57:52.734489",
+    "recommendations": [
+      "Focus remediation on: Concept 1, Concept 2, Concept 0"
+    ]
+  },
+  {
+    "student_id": "student 20",
+    "quiz_id": "quiz_1767871330732",
+    "overall_score": 0.40399999999999997,
+    "overall_risk": "watch",
+    "concept_gaps": [
+      {
+        "concept": "Concept 1",
+        "gap_score": 0.14999999999999997,
+        "risk_level": "safe",
+        "indicators": [
+          "Similar response times for correct/incorrect answers"
+        ]
+      },
+      {
+        "concept": "Concept 2",
+        "gap_score": 0.14999999999999997,
+        "risk_level": "safe",
+        "indicators": [
+          "Similar response times for correct/incorrect answers"
+        ]
+      },
+      {
+        "concept": "Concept 0",
+        "gap_score": 0.2,
+        "risk_level": "safe",
+        "indicators": [
+          "Fast responses with high accuracy (potential AI)"
+        ]
+      }
+    ],
+    "timestamp": "2026-01-08T16:52:10.741760",
+    "recommendations": [
+      "Continue current learning approach - performance looks good"
+    ]
   }
 ]

@@ -1,4 +1,4 @@
-// Configuration for the Learning Gaps Detector
+// Configuration for the Learning Gaps Detector v2
 const CONFIG = {
     API_BASE_URL: 'http://localhost:8000/api',
     

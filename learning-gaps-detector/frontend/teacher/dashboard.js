@@ -1,6 +1,7 @@
-// Teacher Dashboard Logic
+// Teacher Dashboard Logic v2
 class TeacherDashboard {
     constructor() {
+        console.log('TeacherDashboard constructor called');
         this.dashboardData = null;
         this.filteredStudents = [];
         this.currentRiskFilter = 'all';
@@ -34,6 +35,10 @@ class TeacherDashboard {
 
     async loadDashboardData() {
         try {
+            console.log('Loading dashboard data...');
+            console.log('CONFIG:', CONFIG);
+            console.log('API URL:', `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.TEACHER_DASHBOARD}`);
+            
             this.showLoading();
             
             const response = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.TEACHER_DASHBOARD}`);
@@ -42,6 +47,7 @@ class TeacherDashboard {
             }
             
             this.dashboardData = await response.json();
+            console.log('Dashboard data loaded:', this.dashboardData);
             this.renderDashboard();
             this.hideLoading();
             
@@ -52,10 +58,12 @@ class TeacherDashboard {
     }
 
     renderDashboard() {
+        console.log('Rendering dashboard with data:', this.dashboardData);
         this.renderSummaryCards();
         this.renderStudentsList();
-        this.renderConceptAnalysis();
-        this.renderInsights();
+        // Skip concept analysis and insights for now - can be added later
+        // this.renderConceptAnalysis();
+        // this.renderInsights();
         this.checkForAlerts();
     }
 
@@ -72,74 +80,88 @@ class TeacherDashboard {
         const students = this.dashboardData.students;
         this.filteredStudents = students;
         
+        const studentsList = document.getElementById('students-list');
+        
+        if (!studentsList) {
+            console.error('students-list element not found');
+            return;
+        }
+        
         if (students.length === 0) {
-            document.getElementById('students-table-container').style.display = 'none';
-            document.getElementById('no-students-message').classList.remove('hidden');
+            studentsList.innerHTML = '<p style="text-align: center; padding: 2rem; color: #6b6b6b;">No student data available yet. Students will appear here after completing quizzes.</p>';
             return;
         }
 
-        document.getElementById('students-table-container').style.display = 'block';
-        document.getElementById('no-students-message').classList.add('hidden');
-
-        const tableBody = document.getElementById('students-table-body');
-        tableBody.innerHTML = '';
+        studentsList.innerHTML = '';
 
         students.forEach(student => {
-            const row = this.createStudentRow(student);
-            tableBody.appendChild(row);
+            const card = this.createStudentCard(student);
+            studentsList.appendChild(card);
         });
 
         this.filterStudents(); // Apply current filter
     }
 
-    createStudentRow(student) {
-        const row = document.createElement('tr');
+    createStudentCard(student) {
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.setAttribute('data-risk', student.overall_risk);
         
         // Format timestamp
         const lastAssessment = new Date(student.timestamp).toLocaleDateString();
         
         // Format gap score
-        const gapScore = (student.overall_score * 100).toFixed(1);
+        const gapScore = ((student.overall_score || 0) * 100).toFixed(1);
         
         // Top concerns
-        const concerns = student.top_concerns.length > 0 
-            ? student.top_concerns.join(', ')
+        const concerns = student.top_concerns && student.top_concerns.length > 0 
+            ? student.top_concerns.slice(0, 2).join('<br>')
             : 'No major concerns';
 
-        row.innerHTML = `
-            <td class="student-id">${student.student_id}</td>
-            <td>
+        const riskIcon = CONFIG.UI.RISK_ICONS[student.overall_risk] || '📊';
+        const riskLabel = (student.overall_risk || 'safe').replace('_', ' ').toUpperCase();
+
+        card.innerHTML = `
+            <div class="student-card-header">
+                <h3>${student.student_id}</h3>
                 <span class="risk-badge risk-${student.overall_risk}">
-                    ${CONFIG.UI.RISK_ICONS[student.overall_risk]} 
-                    ${student.overall_risk.replace('_', ' ').toUpperCase()}
+                    ${riskIcon} ${riskLabel}
                 </span>
-            </td>
-            <td class="gap-score">${gapScore}%</td>
-            <td>${lastAssessment}</td>
-            <td class="concerns-list">${concerns}</td>
-            <td>
-                <button class="btn primary" onclick="dashboard.viewStudentDetails('${student.student_id}')">
+            </div>
+            <div class="student-card-body">
+                <div class="stat">
+                    <span class="label">Gap Score:</span>
+                    <span class="value">${gapScore}%</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Last Assessment:</span>
+                    <span class="value">${lastAssessment}</span>
+                </div>
+                <div class="concerns">
+                    <span class="label">Key Concerns:</span>
+                    <p class="concerns-text">${concerns}</p>
+                </div>
+            </div>
+            <div class="student-card-footer">
+                <button class="btn btn-primary" onclick="dashboard.viewStudentDetails('${student.student_id}')">
                     View Details
                 </button>
-            </td>
+            </div>
         `;
-
-        // Add risk-specific styling to row
-        row.setAttribute('data-risk', student.overall_risk);
         
-        return row;
+        return card;
     }
 
     filterStudents() {
-        const rows = document.querySelectorAll('#students-table-body tr');
+        const cards = document.querySelectorAll('.student-card');
         
-        rows.forEach(row => {
-            const riskLevel = row.getAttribute('data-risk');
+        cards.forEach(card => {
+            const riskLevel = card.getAttribute('data-risk');
             
             if (this.currentRiskFilter === 'all' || riskLevel === this.currentRiskFilter) {
-                row.style.display = '';
+                card.style.display = '';
             } else {
-                row.style.display = 'none';
+                card.style.display = 'none';
             }
         });
     }
