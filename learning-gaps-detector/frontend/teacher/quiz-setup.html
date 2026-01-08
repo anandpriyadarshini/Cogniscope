@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Setup - Learning Gaps Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .setup-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .setup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setup-header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .quiz-form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option-input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .option-input-group input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .option-input-group input[type="text"] {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 90px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .questions-list {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .questions-list h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .question-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+            flex: 1;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            transition: transform 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .question-details {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .question-options {
+            margin-top: 0.8rem;
+            padding-left: 1rem;
+        }
+
+        .question-option {
+            padding: 0.3rem 0;
+            color: #4a5568;
+        }
+
+        .correct-answer {
+            color: #48bb78;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #48bb78;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border-left: 4px solid #f56565;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1>📝 Quiz Setup</h1>
+            <a href="index.html" class="back-btn">← Back to Portal</a>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <!-- Add Question Form -->
+        <div class="quiz-form-section">
+            <h2>➕ Add New Question</h2>
+            <form id="question-form">
+                <div class="form-group">
+                    <label for="question-text">Question Text *</label>
+                    <textarea id="question-text" required placeholder="Enter your question here..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="concept">Concept/Topic *</label>
+                    <input type="text" id="concept" required placeholder="e.g., Linear Functions, Quadratic Equations">
+                </div>
+
+                <div class="form-group">
+                    <label>Answer Options *</label>
+                    <div class="options-container">
+                        <div class="option-input-group">
+                            <input type="radio" name="correct-answer" value="0" required>
+                            <span class="option-label">Option A:</span>
+                            <input type="text" id="option-0" required placeholder="Enter option A">
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correct-answer" value="1">
+                            <span class="option-label">Option B:</span>
+                            <input type="text" id="option-1" required placeholder="Enter option B">
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correct-answer" value="2">
+                            <span class="option-label">Option C:</span>
+                            <input type="text" id="option-2" required placeholder="Enter option C">
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correct-answer" value="3">
+                            <span class="option-label">Option D:</span>
+                            <input type="text" id="option-3" required placeholder="Enter option D">
+                        </div>
+                    </div>
+                    <small style="color: #718096; margin-top: 0.5rem; display: block;">Select the radio button next to the correct answer</small>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">💾 Add Question</button>
+                    <button type="button" id="clear-form-btn" class="btn btn-secondary">🔄 Clear Form</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Questions List -->
+        <div class="questions-list">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>📚 Current Quiz Questions (<span id="question-count">0</span>)</h2>
+                <button id="save-quiz-btn" class="btn btn-primary">💾 Save Quiz</button>
+            </div>
+            <div id="questions-container">
+                <p style="color: #718096; text-align: center; padding: 2rem;">No questions added yet. Add your first question above!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz-setup.js"></script>
+</body>
+</html>

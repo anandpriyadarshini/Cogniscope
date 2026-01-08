@@ -95,7 +95,39 @@ async def root():
 @app.get("/api/questions")
 async def get_questions():
     """Get quiz questions for students."""
+    # Try to load from file first, fall back to SAMPLE_QUESTIONS
+    try:
+        if os.path.exists(QUESTIONS_FILE):
+            with open(QUESTIONS_FILE, 'r') as f:
+                questions = json.load(f)
+                if questions and len(questions) > 0:
+                    return {"questions": questions}
+    except Exception as e:
+        print(f"Error loading questions: {e}")
+    
     return {"questions": SAMPLE_QUESTIONS}
+
+
+@app.post("/api/save-questions")
+async def save_questions(data: Dict[str, Any]):
+    """Save quiz questions from teacher."""
+    try:
+        questions = data.get('questions', [])
+        
+        if not questions:
+            raise HTTPException(status_code=400, detail="No questions provided")
+        
+        # Save to file
+        with open(QUESTIONS_FILE, 'w') as f:
+            json.dump(questions, f, indent=2)
+        
+        return {
+            "message": "Questions saved successfully",
+            "count": len(questions)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving questions: {str(e)}")
 
 
 @app.post("/api/submit-quiz")
