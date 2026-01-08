@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for live development
+      - ./backend:/app
+      - ./frontend:/frontend
+      # Persist data directory
+      - ./backend/data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - learning-gaps-network
+
+networks:
+  learning-gaps-network:
+    driver: bridge

@@ -142,5 +142,17 @@
     "email": "uhas@gmail.com",
     "role": "teacher",
     "created_at": "2026-01-08T19:22:26.273034"
+  },
+  "80275e8f-b622-4eab-96a1-9ad4535565aa": {
+    "user_id": "eb0c36a1-25c1-4d02-b28d-54ab038bc260",
+    "email": "a@gmail.com",
+    "role": "student",
+    "created_at": "2026-01-08T15:51:29.644496"
+  },
+  "a24127e0-0587-4d05-9408-a46baaf81273": {
+    "user_id": "a821eeaa-683c-4b1b-8677-16ab2e536c36",
+    "email": "b@gmail.com",
+    "role": "teacher",
+    "created_at": "2026-01-08T15:52:14.920033"
   }
 }

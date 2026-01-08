@@ -24,12 +24,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files for frontend
+# Mount static files for frontend - AFTER route handlers (routes defined below)
 import os
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
-app.mount("/student", StaticFiles(directory=os.path.join(frontend_dir, "student"), html=True), name="student")
-app.mount("/teacher", StaticFiles(directory=os.path.join(frontend_dir, "teacher"), html=True), name="teacher")
-app.mount("/shared", StaticFiles(directory=os.path.join(frontend_dir, "shared")), name="shared")
 
 # Data storage paths
 DATA_DIR = "data"
@@ -681,6 +678,14 @@ async def remove_student_from_classroom(classroom_id: str, student_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error removing student: {str(e)}")
+
+
+# ==================== STATIC FILE MOUNTS (Must be last to not intercept API routes) ====================
+app.mount("/student", StaticFiles(directory=os.path.join(frontend_dir, "student"), html=True), name="student")
+app.mount("/teacher", StaticFiles(directory=os.path.join(frontend_dir, "teacher"), html=True), name="teacher")
+app.mount("/shared", StaticFiles(directory=os.path.join(frontend_dir, "shared")), name="shared")
+# Mount root frontend files (login.html, index.html, etc.) - MUST be last
+app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="root")
 
 
 if __name__ == "__main__":
