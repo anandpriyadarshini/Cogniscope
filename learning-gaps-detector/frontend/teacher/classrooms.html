@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher - Classrooms</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            padding: 8px 16px;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 16px;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .classroom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .classroom-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .classroom-card h3 {
+            color: #667eea;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .classroom-info {
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .classroom-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .join-code {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px dashed #667eea;
+        }
+
+        .join-code .label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .join-code .code {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            letter-spacing: 2px;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .classroom-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .members-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .member-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .member-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-list li:last-child {
+            border-bottom: none;
+        }
+
+        .member-name {
+            font-weight: 500;
+        }
+
+        .member-joined {
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .classroom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 Teacher Classrooms</h1>
+            <p>Create and manage your classrooms</p>
+        </header>
+
+        <div id="alert-container"></div>
+
+        <div class="content">
+            <!-- Create Classroom Card -->
+            <div class="card">
+                <h2>✨ Create New Classroom</h2>
+                <form id="create-classroom-form">
+                    <div class="form-group">
+                        <label for="classroom-name">Classroom Name *</label>
+                        <input type="text" id="classroom-name" placeholder="e.g., Algebra 101" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroom-description">Description</label>
+                        <textarea id="classroom-description" placeholder="e.g., Introduction to Algebra" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="classroom-subject">Subject</label>
+                        <input type="text" id="classroom-subject" placeholder="e.g., Mathematics">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Classroom</button>
+                </form>
+            </div>
+
+            <!-- Quick Info Card -->
+            <div class="card">
+                <h2>📊 Quick Stats</h2>
+                <div style="margin-top: 30px;">
+                    <div style="margin-bottom: 25px;">
+                        <div style="font-size: 2.5em; color: #667eea; font-weight: bold;" id="total-classrooms">0</div>
+                        <p style="color: #666; margin: 5px 0;">Total Classrooms</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 2.5em; color: #667eea; font-weight: bold;" id="total-students">0</div>
+                        <p style="color: #666; margin: 5px 0;">Students Enrolled</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classrooms List -->
+        <div class="card">
+            <h2>📝 Your Classrooms</h2>
+            <div id="classrooms-loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading classrooms...</p>
+            </div>
+            <div id="classrooms-container" class="classroom-grid">
+                <!-- Classrooms will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Members Modal -->
+    <div id="members-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeMembersModal()">&times;</span>
+            <h2>👥 Classroom Members</h2>
+            <p id="modal-classroom-name"></p>
+            <div id="members-loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+            <ul id="members-list" class="member-list">
+                <!-- Members will be loaded here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        const TEACHER_ID = localStorage.getItem('teacherId') || 'teacher_001';
+        const TEACHER_NAME = localStorage.getItem('teacherName') || 'Mr. Johnson';
+
+        // Store teacher info
+        localStorage.setItem('teacherId', TEACHER_ID);
+        localStorage.setItem('teacherName', TEACHER_NAME);
+
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // Create Classroom Form
+        document.getElementById('create-classroom-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('classroom-name').value;
+            const description = document.getElementById('classroom-description').value;
+            const subject = document.getElementById('classroom-subject').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/classrooms?teacher_id=${TEACHER_ID}&teacher_name=${TEACHER_NAME}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        description,
+                        subject
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to create classroom');
+
+                const data = await response.json();
+                showAlert(`✅ Classroom "${name}" created! Join code: ${data.join_code}`);
+                document.getElementById('create-classroom-form').reset();
+                loadClassrooms();
+            } catch (error) {
+                showAlert('❌ ' + error.message, 'error');
+            }
+        });
+
+        async function loadClassrooms() {
+            const container = document.getElementById('classrooms-container');
+            const loading = document.getElementById('classrooms-loading');
+            
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/teacher-classrooms/${TEACHER_ID}`);
+                const data = await response.json();
+                const classrooms = data.classrooms || [];
+
+                if (classrooms.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>📭 No classrooms yet. Create one to get started!</p></div>';
+                    document.getElementById('total-classrooms').textContent = '0';
+                    document.getElementById('total-students').textContent = '0';
+                } else {
+                    let totalStudents = 0;
+                    classrooms.forEach(classroom => {
+                        totalStudents += classroom.member_count;
+                        const createdDate = new Date(classroom.created_at).toLocaleDateString();
+                        
+                        const card = document.createElement('div');
+                        card.className = 'classroom-card';
+                        card.innerHTML = `
+                            <h3>${classroom.name}</h3>
+                            <div class="classroom-info">
+                                <p><span class="info-label">Description:</span> ${classroom.description || 'N/A'}</p>
+                                <p><span class="info-label">Subject:</span> ${classroom.subject || 'N/A'}</p>
+                                <p><span class="info-label">Created:</span> ${createdDate}</p>
+                            </div>
+                            <div class="join-code">
+                                <div class="label">Join Code</div>
+                                <div class="code">${classroom.join_code}</div>
+                                <button type="button" class="copy-btn" onclick="copyToClipboard('${classroom.join_code}')">📋 Copy</button>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <span class="members-count">👥 ${classroom.member_count} Students</span>
+                            </div>
+                            <div class="classroom-actions">
+                                <button onclick="viewMembers('${classroom.classroom_id}', '${classroom.name}')" class="btn btn-secondary">View Members</button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+
+                    document.getElementById('total-classrooms').textContent = classrooms.length;
+                    document.getElementById('total-students').textContent = totalStudents;
+                }
+            } catch (error) {
+                showAlert('Error loading classrooms: ' + error.message, 'error');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        async function viewMembers(classroomId, classroomName) {
+            const modal = document.getElementById('members-modal');
+            const membersList = document.getElementById('members-list');
+            const loading = document.getElementById('members-loading');
+
+            document.getElementById('modal-classroom-name').textContent = classroomName;
+            loading.style.display = 'block';
+            membersList.innerHTML = '';
+            modal.classList.add('active');
+
+            try {
+                const response = await fetch(`${API_BASE}/classrooms/${classroomId}/members`);
+                const data = await response.json();
+                
+                if (data.members.length === 0) {
+                    membersList.innerHTML = '<li style="text-align: center; padding: 30px;">No students enrolled yet</li>';
+                } else {
+                    membersList.innerHTML = data.members.map(member => `
+                        <li>
+                            <div>
+                                <div class="member-name">${member.student_name}</div>
+                                <div class="member-joined">Joined: ${new Date(member.joined_at).toLocaleDateString()}</div>
+                            </div>
+                        </li>
+                    `).join('');
+                }
+            } catch (error) {
+                membersList.innerHTML = `<li style="color: red; padding: 30px;">Error loading members: ${error.message}</li>`;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function closeMembersModal() {
+            document.getElementById('members-modal').classList.remove('active');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('✅ Join code copied to clipboard!');
+            });
+        }
+
+        // Load classrooms on page load
+        loadClassrooms();
+
+        // Refresh every 30 seconds
+        setInterval(loadClassrooms, 30000);
+
+        // Close modal on click outside
+        document.getElementById('members-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'members-modal') {
+                closeMembersModal();
+            }
+        });
+    </script>
+</body>
+</html>
