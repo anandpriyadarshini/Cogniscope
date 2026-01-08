@@ -487,39 +487,103 @@ Gap Score = (Behavioral Inconsistencies × 0.7) + (AI Probability × 0.3)
 
 ```
 learning-gaps-detector/
-├── 📁 backend/                 # FastAPI Intelligence Engine
-│   ├── main.py                # API endpoints & server
-│   ├── requirements.txt       # Python dependencies
-│   ├── 📁 models/            # Data schemas
-│   │   ├── quiz.py           # Quiz submission models  
-│   │   └── result.py         # Analysis result models
-│   ├── 📁 logic/             # 🧠 Core Intelligence
-│   │   ├── features.py       # Behavioral feature extraction
-│   │   ├── rules.py          # Rule-based gap detection
-│   │   ├── authenticity.py   # AI usage detection
-│   │   └── scoring.py        # Final scoring engine
-│   ├── 📁 data/              # JSON storage
-│   │   ├── responses.json    # Student submissions
-│   │   └── scores.json       # Gap analysis results
-│   └── 📁 utils/
-│       └── time_utils.py     # Time analysis utilities
+├── � Dockerfile                       # Docker container configuration
+├── 📄 docker-compose.yml               # Docker Compose multi-container setup
+├── 📄 .dockerignore                    # Files excluded from Docker build
 │
-├── 📁 frontend/               # User Interfaces
-│   ├── 📁 student/           # Student Quiz Interface
-│   │   ├── index.html        # Quiz interface
-│   │   ├── quiz.js           # Timing & confidence logic
-│   │   └── style.css         # Student UI styling
-│   ├── 📁 teacher/           # Teacher Dashboard
-│   │   ├── dashboard.html    # Analytics dashboard
-│   │   ├── dashboard.js      # Data visualization
-│   │   └── style.css         # Dashboard styling
-│   └── 📁 shared/
-│       └── config.js         # Frontend configuration
+├── 📁 backend/                         # FastAPI Intelligence Engine
+│   ├── main.py                        # FastAPI application & API endpoints
+│   ├── requirements.txt               # Python dependencies
+│   ├── __init__.py                    # Package initialization
+│   ├── test_classrooms.py             # Unit tests for classrooms
+│   ├── test_real_data.py              # Unit tests with real data
+│   │
+│   ├── 📁 models/                     # Data schemas & models
+│   │   ├── auth.py                    # Authentication models
+│   │   ├── quiz.py                    # Quiz submission models
+│   │   ├── classroom.py               # Classroom management models
+│   │   └── result.py                  # Analysis result models
+│   │
+│   ├── 📁 logic/                      # 🧠 Core Intelligence Engine
+│   │   ├── auth.py                    # Authentication logic
+│   │   ├── authenticity.py            # AI usage detection
+│   │   ├── features.py                # Behavioral feature extraction
+│   │   ├── rules.py                   # Rule-based gap detection
+│   │   └── scoring.py                 # Final scoring & gap calculation
+│   │
+│   ├── 📁 data/                       # JSON storage (persisted in Docker)
+│   │   ├── responses.json             # Student quiz submissions
+│   │   ├── scores.json                # Gap analysis results
+│   │   ├── questions.json             # Quiz questions database
+│   │   ├── classrooms.json            # Classroom registry
+│   │   ├── sessions.json              # User sessions
+│   │   └── users.json                 # User accounts
+│   │
+│   └── 📁 utils/                      # Utility functions
+│       └── time_utils.py              # Time analysis utilities
 │
-└── README.md                 # This file
+├── 📁 frontend/                        # User Interfaces
+│   ├── 📄 index.html                  # Main entry point
+│   ├── 📄 index.js                    # Authentication logic
+│   ├── 📄 login.html                  # Login/Signup page
+│   ├── 📄 style.css                   # Global styles
+│   │
+│   ├── 📁 student/                    # Student Portal
+│   │   ├── index.html                 # Student home
+│   │   ├── classrooms.html            # View & join classrooms
+│   │   ├── classroom-quizzes.html     # Quizzes in classroom
+│   │   ├── quiz.html                  # Quiz interface
+│   │   ├── quiz.js                    # Timing & confidence logic
+│   │   ├── quiz-report.html           # Quiz results & report
+│   │   └── style.css                  # Student UI styling
+│   │
+│   ├── 📁 teacher/                    # Teacher Dashboard
+│   │   ├── index.html                 # Teacher home
+│   │   ├── classrooms.html            # Manage classrooms
+│   │   ├── dashboard.html             # Analytics dashboard
+│   │   ├── dashboard.js               # Data visualization
+│   │   ├── quiz-setup.html            # Create quizzes
+│   │   ├── quiz-setup.js              # Quiz creation logic
+│   │   └── style.css                  # Dashboard styling
+│   │
+│   └── 📁 shared/                     # Shared resources
+│       └── config.js                  # Frontend configuration
+│
+├── 📄 README.md                        # This file
+├── 📄 DOCKER_SETUP.md                 # Docker setup guide
+├── 📄 QUICKSTART.md                   # Quick start guide
+├── 📄 AUTHENTICATION_GUIDE.md          # Authentication documentation
+├── 📄 AUTH_FLOW.md                    # Auth flow diagram
+├── 📄 ROLE_VALIDATION.md              # Role validation details
+│
+└── 📄 run_server.sh                   # Bash script to run server (legacy)
 ```
 
+## 📦 Key Directories Explained
+
+| Directory | Purpose | Important Files |
+|-----------|---------|-----------------|
+| `backend/` | FastAPI server & intelligence engine | `main.py`, `requirements.txt` |
+| `backend/models/` | Data structures & schemas | `auth.py`, `quiz.py`, `classroom.py` |
+| `backend/logic/` | Learning gap detection algorithms | `authenticity.py`, `scoring.py` |
+| `backend/data/` | JSON data storage (persisted) | `responses.json`, `classrooms.json` |
+| `frontend/` | Web user interfaces | `index.html`, `login.html` |
+| `frontend/student/` | Student quiz portal | `quiz.html`, `quiz.js` |
+| `frontend/teacher/` | Teacher analytics dashboard | `dashboard.html`, `quiz-setup.html` |
+| `frontend/shared/` | Shared frontend resources | `config.js` |
+
+## 🐳 Docker Files
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Defines Docker image (Python 3.11, FastAPI, dependencies) |
+| `docker-compose.yml` | Orchestrates container with volume mounts for live development |
+| `.dockerignore` | Excludes unnecessary files from Docker build |
+
 ## 🧪 Testing the System
+
+### Simulate Different Learning Patterns
+````
 
 ### Simulate Different Learning Patterns
 
