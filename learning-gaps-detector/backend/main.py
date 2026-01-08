@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any
@@ -8,6 +8,7 @@ from datetime import datetime
 
 from models.quiz import StudentSubmission, Question, QuizAttempt
 from models.result import LearningGapResult
+from models.classroom import Classroom, ClassroomCreate, JoinClassroomRequest, ClassroomResponse, ClassroomMember
 from logic.scoring import LearningGapScorer
 
 app = FastAPI(title="AI-Resilient Learning Gaps Detector", version="1.0.0")
@@ -36,15 +37,16 @@ DATA_DIR = "data"
 RESPONSES_FILE = os.path.join(DATA_DIR, "responses.json")
 SCORES_FILE = os.path.join(DATA_DIR, "scores.json")
 QUESTIONS_FILE = os.path.join(DATA_DIR, "questions.json")
+CLASSROOMS_FILE = os.path.join(DATA_DIR, "classrooms.json")
 
 # Ensure data directory exists
 os.makedirs(DATA_DIR, exist_ok=True)
 
 # Initialize data files if they don't exist
-for file_path in [RESPONSES_FILE, SCORES_FILE, QUESTIONS_FILE]:
+for file_path in [RESPONSES_FILE, SCORES_FILE, QUESTIONS_FILE, CLASSROOMS_FILE]:
     if not os.path.exists(file_path):
         with open(file_path, 'w') as f:
-            json.dump([], f)
+            json.dump([] if file_path != CLASSROOMS_FILE else {}, f)
 
 
 # Sample questions for demo
@@ -338,6 +340,246 @@ async def reset_data():
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error resetting data: {str(e)}")
+
+
+# ============ CLASSROOM MANAGEMENT ENDPOINTS ============
+
+@app.post("/api/classrooms")
+async def create_classroom(classroom: ClassroomCreate, teacher_id: str = Query(...), teacher_name: str = Query(...)):
+    """Create a new classroom (teacher only)."""
+    try:
+        # Load existing classrooms
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        # Generate unique classroom ID and join code
+        classroom_id = str(datetime.now().timestamp()).replace('.', '')
+        join_code = Classroom.generate_join_code()
+        
+        # Ensure join code is unique
+        while any(c['join_code'] == join_code for c in classrooms.values()):
+            join_code = Classroom.generate_join_code()
+        
+        # Create new classroom object
+        new_classroom = {
+            "classroom_id": classroom_id,
+            "teacher_id": teacher_id,
+            "teacher_name": teacher_name,
+            "name": classroom.name,
+            "description": classroom.description,
+            "subject": classroom.subject,
+            "join_code": join_code,
+            "created_at": datetime.now().isoformat(),
+            "members": [],
+            "quiz_ids": []
+        }
+        
+        # Save classroom
+        classrooms[classroom_id] = new_classroom
+        with open(CLASSROOMS_FILE, 'w') as f:
+            json.dump(classrooms, f, indent=2)
+        
+        return {
+            "message": "Classroom created successfully",
+            "classroom_id": classroom_id,
+            "join_code": join_code,
+            "classroom": new_classroom
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating classroom: {str(e)}")
+
+
+@app.get("/api/classrooms/{classroom_id}")
+async def get_classroom(classroom_id: str):
+    """Get classroom details."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        if classroom_id not in classrooms:
+            raise HTTPException(status_code=404, detail="Classroom not found")
+        
+        classroom = classrooms[classroom_id]
+        
+        return {
+            "classroom_id": classroom["classroom_id"],
+            "teacher_id": classroom["teacher_id"],
+            "teacher_name": classroom["teacher_name"],
+            "name": classroom["name"],
+            "description": classroom["description"],
+            "subject": classroom["subject"],
+            "join_code": classroom["join_code"],
+            "created_at": classroom["created_at"],
+            "members": classroom["members"],
+            "quiz_ids": classroom["quiz_ids"],
+            "member_count": len(classroom["members"])
+        }
+        
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No classrooms found")
+
+
+@app.get("/api/teacher-classrooms/{teacher_id}")
+async def get_teacher_classrooms(teacher_id: str):
+    """Get all classrooms for a teacher."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        teacher_classrooms = [c for c in classrooms.values() if c["teacher_id"] == teacher_id]
+        
+        return {
+            "classrooms": [
+                {
+                    "classroom_id": c["classroom_id"],
+                    "name": c["name"],
+                    "description": c["description"],
+                    "subject": c["subject"],
+                    "join_code": c["join_code"],
+                    "created_at": c["created_at"],
+                    "member_count": len(c["members"]),
+                    "quiz_count": len(c["quiz_ids"])
+                }
+                for c in teacher_classrooms
+            ]
+        }
+        
+    except FileNotFoundError:
+        return {"classrooms": []}
+
+
+@app.get("/api/student-classrooms/{student_id}")
+async def get_student_classrooms(student_id: str):
+    """Get all classrooms that a student is enrolled in."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        student_classrooms = []
+        for classroom in classrooms.values():
+            for member in classroom["members"]:
+                if member["student_id"] == student_id:
+                    student_classrooms.append({
+                        "classroom_id": classroom["classroom_id"],
+                        "teacher_id": classroom["teacher_id"],
+                        "teacher_name": classroom["teacher_name"],
+                        "name": classroom["name"],
+                        "description": classroom["description"],
+                        "subject": classroom["subject"],
+                        "created_at": classroom["created_at"],
+                        "member_count": len(classroom["members"]),
+                        "quiz_count": len(classroom["quiz_ids"]),
+                        "joined_at": member["joined_at"]
+                    })
+                    break
+        
+        return {"classrooms": student_classrooms}
+        
+    except FileNotFoundError:
+        return {"classrooms": []}
+
+
+@app.post("/api/classrooms/join")
+async def join_classroom(request: JoinClassroomRequest):
+    """Join a classroom using a join code."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        # Find classroom by join code
+        target_classroom = None
+        for classroom in classrooms.values():
+            if classroom["join_code"] == request.join_code:
+                target_classroom = classroom
+                break
+        
+        if not target_classroom:
+            raise HTTPException(status_code=404, detail="Invalid join code")
+        
+        # Check if student is already a member
+        for member in target_classroom["members"]:
+            if member["student_id"] == request.student_id:
+                raise HTTPException(status_code=400, detail="Student already enrolled in this classroom")
+        
+        # Add student to classroom
+        new_member = {
+            "student_id": request.student_id,
+            "student_name": request.student_name,
+            "joined_at": datetime.now().isoformat()
+        }
+        target_classroom["members"].append(new_member)
+        
+        # Save updated classroom
+        with open(CLASSROOMS_FILE, 'w') as f:
+            json.dump(classrooms, f, indent=2)
+        
+        return {
+            "message": "Successfully joined classroom",
+            "classroom_id": target_classroom["classroom_id"],
+            "classroom_name": target_classroom["name"],
+            "teacher_name": target_classroom["teacher_name"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error joining classroom: {str(e)}")
+
+
+@app.get("/api/classrooms/{classroom_id}/members")
+async def get_classroom_members(classroom_id: str):
+    """Get all members of a classroom."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        if classroom_id not in classrooms:
+            raise HTTPException(status_code=404, detail="Classroom not found")
+        
+        classroom = classrooms[classroom_id]
+        
+        return {
+            "classroom_id": classroom_id,
+            "classroom_name": classroom["name"],
+            "teacher_name": classroom["teacher_name"],
+            "members": classroom["members"],
+            "member_count": len(classroom["members"])
+        }
+        
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Classroom not found")
+
+
+@app.delete("/api/classrooms/{classroom_id}/members/{student_id}")
+async def remove_student_from_classroom(classroom_id: str, student_id: str):
+    """Remove a student from a classroom."""
+    try:
+        with open(CLASSROOMS_FILE, 'r') as f:
+            classrooms = json.load(f)
+        
+        if classroom_id not in classrooms:
+            raise HTTPException(status_code=404, detail="Classroom not found")
+        
+        classroom = classrooms[classroom_id]
+        
+        # Find and remove student
+        original_count = len(classroom["members"])
+        classroom["members"] = [m for m in classroom["members"] if m["student_id"] != student_id]
+        
+        if len(classroom["members"]) == original_count:
+            raise HTTPException(status_code=404, detail="Student not found in classroom")
+        
+        # Save updated classroom
+        with open(CLASSROOMS_FILE, 'w') as f:
+            json.dump(classrooms, f, indent=2)
+        
+        return {"message": "Student removed from classroom"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error removing student: {str(e)}")
 
 
 if __name__ == "__main__":

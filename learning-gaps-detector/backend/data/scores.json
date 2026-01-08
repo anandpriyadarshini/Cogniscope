@@ -36,17 +36,17 @@
     ]
   },
   {
-    "student_id": "student 2",
-    "quiz_id": "quiz_1767765369663",
-    "overall_score": 0.579,
+    "student_id": "123",
+    "quiz_id": "quiz_1767855700851",
+    "overall_score": 0.40399999999999997,
     "overall_risk": "watch",
     "concept_gaps": [
       {
         "concept": "Concept 1",
-        "gap_score": 0.8999999999999999,
-        "risk_level": "at_risk",
+        "gap_score": 0.14999999999999997,
+        "risk_level": "safe",
         "indicators": [
-          "Low accuracy (0.0%)"
+          "Similar response times for correct/incorrect answers"
         ]
       },
       {
@@ -59,53 +59,16 @@
       },
       {
         "concept": "Concept 0",
-        "gap_score": 1.0,
-        "risk_level": "at_risk",
+        "gap_score": 0.2,
+        "risk_level": "safe",
         "indicators": [
-          "Low accuracy (0.0%)",
-          "Overconfident despite poor performance"
+          "Fast responses with high accuracy (potential AI)"
         ]
       }
     ],
-    "timestamp": "2026-01-07T11:26:09.672835",
+    "timestamp": "2026-01-08T12:31:40.884170",
     "recommendations": [
-      "Focus remediation on: Concept 1, Concept 0"
-    ]
-  },
-  {
-    "student_id": "student 3",
-    "quiz_id": "quiz_1767854314574",
-    "overall_score": 0.567,
-    "overall_risk": "watch",
-    "concept_gaps": [
-      {
-        "concept": "Concept 1",
-        "gap_score": 0.8999999999999999,
-        "risk_level": "at_risk",
-        "indicators": [
-          "Low accuracy (0.0%)"
-        ]
-      },
-      {
-        "concept": "Concept 2",
-        "gap_score": 0.44999999999999996,
-        "risk_level": "watch",
-        "indicators": [
-          "Similar response times for correct/incorrect answers"
-        ]
-      },
-      {
-        "concept": "Concept 0",
-        "gap_score": 0.8999999999999999,
-        "risk_level": "at_risk",
-        "indicators": [
-          "Low accuracy (0.0%)"
-        ]
-      }
-    ],
-    "timestamp": "2026-01-08T12:08:34.583210",
-    "recommendations": [
-      "Focus remediation on: Concept 1, Concept 0"
+      "Continue current learning approach - performance looks good"
     ]
   }
 ]
