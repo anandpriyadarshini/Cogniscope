@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Quizzes - Student</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+
+        .header p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .classroom-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .quizzes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .quiz-card h3 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+
+        .quiz-card p {
+            color: #666;
+            font-size: 0.95em;
+            margin: 8px 0;
+        }
+
+        .quiz-meta {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+
+        .quiz-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px 0;
+        }
+
+        .status-new {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-attempted {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .quizzes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="classroom-name">📚 Classroom</h1>
+            <div class="classroom-info">
+                <p><strong>Teacher:</strong> <span id="teacher-name">-</span></p>
+                <p><strong>Subject:</strong> <span id="subject">-</span></p>
+                <p><strong>Total Questions per Quiz:</strong> <span id="total-quizzes">0</span></p>
+            </div>
+            <a href="classrooms.html" class="back-btn">← Back to Classrooms</a>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading quizzes...</p>
+        </div>
+
+        <div id="quizzes-container" class="quizzes-grid">
+            <!-- Quizzes will load here -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        const STUDENT_ID = localStorage.getItem('studentId');
+        
+        let classroomId = null;
+        let attemptedQuizzes = new Set();
+
+        // Get classroom ID from URL
+        const params = new URLSearchParams(window.location.search);
+        classroomId = params.get('classroom_id');
+
+        if (!classroomId) {
+            showAlert('No classroom selected', 'error');
+            setTimeout(() => window.location.href = 'classrooms.html', 2000);
+        }
+
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        async function loadClassroomAndQuizzes() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+
+            try {
+                // Load classroom info
+                const classroomResponse = await fetch(`${API_BASE}/classrooms/${classroomId}`);
+                if (!classroomResponse.ok) throw new Error('Classroom not found');
+                
+                const classroom = await classroomResponse.json();
+                
+                document.getElementById('classroom-name').textContent = `📚 ${classroom.name}`;
+                document.getElementById('teacher-name').textContent = classroom.teacher_name;
+                document.getElementById('subject').textContent = classroom.subject || 'N/A';
+
+                // Load all quizzes (from localStorage for now)
+                loadAndDisplayQuizzes(classroom);
+
+            } catch (error) {
+                showAlert('Error loading classroom: ' + error.message, 'error');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function loadAndDisplayQuizzes(classroom) {
+            const container = document.getElementById('quizzes-container');
+            container.innerHTML = '';
+
+            // Get all quizzes from localStorage that belong to this classroom
+            const quizzes = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('quiz_')) {
+                    const quiz = JSON.parse(localStorage.getItem(key));
+                    if (quiz.classroom_id === classroomId) {
+                        quizzes.push(quiz);
+                    }
+                }
+            }
+
+            // Check which quizzes student has attempted
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('attempt_')) {
+                    const attempt = JSON.parse(localStorage.getItem(key));
+                    if (attempt.student_id === STUDENT_ID) {
+                        attemptedQuizzes.add(attempt.quiz_id);
+                    }
+                }
+            }
+
+            if (quizzes.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><p>📭 No quizzes available in this classroom yet.</p><p>Check back later!</p></div>';
+                document.getElementById('total-quizzes').textContent = '0';
+                return;
+            }
+
+            document.getElementById('total-quizzes').textContent = quizzes.length;
+
+            quizzes.forEach(quiz => {
+                const isAttempted = attemptedQuizzes.has(quiz.quiz_id);
+                const questionCount = quiz.questions ? quiz.questions.length : 0;
+                const createdDate = new Date(quiz.created_at).toLocaleDateString();
+                
+                let statusClass = 'status-new';
+                let statusText = '🆕 New';
+                let buttonText = '📝 Take Quiz';
+                
+                if (isAttempted) {
+                    statusClass = 'status-attempted';
+                    statusText = '✅ Attempted';
+                    buttonText = '📊 View Report';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.innerHTML = `
+                    <h3>${quiz.name || 'Unnamed Quiz'}</h3>
+                    <div class="quiz-status ${statusClass}">${statusText}</div>
+                    <p>${quiz.description || 'No description'}</p>
+                    <div class="quiz-meta">
+                        <p><strong>Questions:</strong> ${questionCount}</p>
+                        <p><strong>Created:</strong> ${createdDate}</p>
+                        ${quiz.deadline ? `<p><strong>Deadline:</strong> ${new Date(quiz.deadline).toLocaleDateString()}</p>` : ''}
+                    </div>
+                    <button class="btn btn-primary" onclick="accessQuiz('${quiz.quiz_id}', ${isAttempted})">${buttonText}</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function accessQuiz(quizId, isAttempted) {
+            if (isAttempted) {
+                // Show report
+                window.location.href = `quiz-report.html?quiz_id=${quizId}&classroom_id=${classroomId}`;
+            } else {
+                // Take quiz
+                window.location.href = `quiz.html?quiz_id=${quizId}&classroom_id=${classroomId}`;
+            }
+        }
+
+        // Load on page load
+        loadClassroomAndQuizzes();
+    </script>
+</body>
+</html>

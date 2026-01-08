@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Setup - Learning Gaps Detector</title>
-    <link rel="stylesheet" href="style.css">
     <style>
         .setup-container {
             max-width: 1200px;
@@ -270,6 +269,8 @@
 
         <div id="alert-container"></div>
 
+        <div id="alert-container"></div>
+
         <!-- Add Question Form -->
         <div class="quiz-form-section">
             <h2>➕ Add New Question</h2>
@@ -330,6 +331,181 @@
         </div>
     </div>
 
-    <script src="quiz-setup.js"></script>
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let classroomId = null;
+        
+        // Get classroom ID from URL
+        const params = new URLSearchParams(window.location.search);
+        classroomId = params.get('classroom_id');
+        
+        // Get teacher info
+        const teacherId = localStorage.getItem('teacherId') || 'teacher_001';
+        const teacherName = localStorage.getItem('teacherName') || 'Teacher';
+
+        let quizQuestions = [];
+        let questionCount = 0;
+
+        // Load existing questions
+        async function loadQuestions() {
+            try {
+                const response = await fetch(`${API_BASE}/questions`);
+                const data = await response.json();
+                console.log('Questions loaded:', data.questions);
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        }
+
+        // Add new question
+        document.getElementById('question-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const questionText = document.getElementById('question-text').value;
+            const concept = document.getElementById('concept').value;
+            const options = [
+                document.getElementById('option-0').value,
+                document.getElementById('option-1').value,
+                document.getElementById('option-2').value,
+                document.getElementById('option-3').value
+            ];
+            const correctAnswer = parseInt(document.querySelector('input[name="correct-answer"]:checked').value);
+
+            const question = {
+                id: Date.now(),
+                text: questionText,
+                concept: concept,
+                options: options,
+                correct_answer: correctAnswer,
+                classroom_id: classroomId
+            };
+
+            quizQuestions.push(question);
+            questionCount++;
+
+            addQuestionToUI(question, questionCount);
+            document.getElementById('question-form').reset();
+            document.getElementById('question-count').textContent = questionCount;
+
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.textContent = '✅ Question added successfully!';
+            document.getElementById('alert-container').appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+        });
+
+        function addQuestionToUI(question, index) {
+            const container = document.getElementById('questions-container');
+            
+            if (container.querySelector('p')) {
+                container.innerHTML = '';
+            }
+
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-item';
+            questionDiv.innerHTML = `
+                <div class="question-header">
+                    <div class="question-text">Q${index}. ${question.text}</div>
+                    <div class="question-actions">
+                        <button class="icon-btn" onclick="editQuestion(${question.id})">✏️</button>
+                        <button class="icon-btn" onclick="deleteQuestion(${question.id})">🗑️</button>
+                    </div>
+                </div>
+                <div class="question-details">Concept: ${question.concept}</div>
+                <div class="question-options">
+                    ${question.options.map((opt, idx) => `
+                        <div class="question-option">
+                            ${String.fromCharCode(65 + idx)}. ${opt} ${idx === question.correct_answer ? '<span class="correct-answer">✓ Correct</span>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            container.appendChild(questionDiv);
+        }
+
+        function deleteQuestion(questionId) {
+            quizQuestions = quizQuestions.filter(q => q.id !== questionId);
+            questionCount = quizQuestions.length;
+            document.getElementById('questions-container').innerHTML = '';
+            quizQuestions.forEach((q, idx) => addQuestionToUI(q, idx + 1));
+            document.getElementById('question-count').textContent = questionCount;
+        }
+
+        function editQuestion(questionId) {
+            const question = quizQuestions.find(q => q.id === questionId);
+            if (!question) return;
+
+            document.getElementById('question-text').value = question.text;
+            document.getElementById('concept').value = question.concept;
+            question.options.forEach((opt, idx) => {
+                document.getElementById(`option-${idx}`).value = opt;
+            });
+            document.querySelector(`input[value="${question.correct_answer}"]`).checked = true;
+
+            deleteQuestion(questionId);
+        }
+
+        document.getElementById('clear-form-btn').addEventListener('click', () => {
+            document.getElementById('question-form').reset();
+        });
+
+        document.getElementById('save-quiz-btn').addEventListener('click', async () => {
+            if (quizQuestions.length === 0) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-error';
+                alert.textContent = '❌ Please add at least one question!';
+                document.getElementById('alert-container').appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+                return;
+            }
+
+            try {
+                // Save quiz data locally
+                const quizData = {
+                    quiz_id: 'quiz_' + Date.now(),
+                    classroom_id: classroomId,
+                    teacher_id: teacherId,
+                    questions: quizQuestions,
+                    created_at: new Date().toISOString(),
+                    status: 'published'
+                };
+
+                localStorage.setItem(`quiz_${quizData.quiz_id}`, JSON.stringify(quizData));
+
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success';
+                alert.textContent = `✅ Quiz saved with ${quizQuestions.length} questions!`;
+                document.getElementById('alert-container').appendChild(alert);
+
+                setTimeout(() => {
+                    if (classroomId) {
+                        window.location.href = `index.html?classroom_id=${classroomId}`;
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 2000);
+            } catch (error) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-error';
+                alert.textContent = '❌ Error saving quiz: ' + error.message;
+                document.getElementById('alert-container').appendChild(alert);
+            }
+        });
+
+        // Add back button functionality
+        const backBtn = document.querySelector('.back-btn');
+        if (backBtn) {
+            backBtn.onclick = () => {
+                if (classroomId) {
+                    window.location.href = `index.html?classroom_id=${classroomId}`;
+                } else {
+                    window.location.href = 'index.html';
+                }
+            };
+        }
+
+        loadQuestions();
+    </script>
 </body>
 </html>

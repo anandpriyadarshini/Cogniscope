@@ -125,13 +125,13 @@
 <body>
     <div class="landing-container">
         <div class="landing-header">
-            <h1>🎓 Teacher Portal</h1>
-            <p>AI-Resilient Learning Gaps Detector</p>
+            <h1 id="page-title">🎓 Teacher Portal</h1>
+            <p id="page-subtitle">AI-Resilient Learning Gaps Detector</p>
         </div>
 
         <div class="options-container">
             <!-- Quiz Setup Option -->
-            <a href="quiz-setup.html" class="option-card setup-card">
+            <a href="#" id="quiz-setup-link" class="option-card setup-card">
                 <div class="option-icon">📝</div>
                 <h2>Set Up Quiz</h2>
                 <p>Create and manage quiz questions for your students. Customize assessments to match your curriculum.</p>
@@ -139,13 +139,74 @@
             </a>
 
             <!-- Performance Dashboard Option -->
-            <a href="dashboard.html" class="option-card analytics-card">
+            <a href="#" id="analytics-link" class="option-card analytics-card">
                 <div class="option-icon">📊</div>
                 <h2>View Analytics</h2>
                 <p>Monitor student performance, detect learning gaps, and identify AI usage patterns in real-time.</p>
                 <button class="btn">View Dashboard</button>
             </a>
+
+            <!-- Back to Classrooms Option (shown only in classroom view) -->
+            <a href="#" id="back-link" class="option-card" style="border-top: 5px solid #ed8936; display: none;">
+                <div class="option-icon">🏫</div>
+                <h2>Back to Classrooms</h2>
+                <p>Return to your list of classrooms to manage other classes.</p>
+                <button class="btn">Go Back</button>
+            </a>
         </div>
     </div>
-</body>
-</html>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        const TEACHER_ID = localStorage.getItem('teacherId') || 'teacher_001';
+        
+        // Check if in classroom view
+        const params = new URLSearchParams(window.location.search);
+        const classroomId = params.get('classroom_id');
+        
+        if (classroomId) {
+            // In classroom view
+            loadClassroomView();
+        } else {
+            // Main portal view
+            setupMainPortal();
+        }
+        
+        function setupMainPortal() {
+            document.getElementById('quiz-setup-link').href = 'quiz-setup.html';
+            document.getElementById('analytics-link').href = 'dashboard.html';
+            document.getElementById('back-link').style.display = 'none';
+        }
+        
+        async function loadClassroomView() {
+            try {
+                const response = await fetch(`${API_BASE}/classrooms/${classroomId}`);
+                if (!response.ok) throw new Error('Classroom not found');
+                
+                const classroom = await response.json();
+                
+                // Update header
+                document.getElementById('page-title').textContent = `📚 ${classroom.name}`;
+                document.getElementById('page-subtitle').textContent = `Subject: ${classroom.subject || 'N/A'} • Students: ${classroom.member_count || 0}`;
+                
+                // Update links
+                document.getElementById('quiz-setup-link').href = `quiz-setup.html?classroom_id=${classroomId}`;
+                document.getElementById('analytics-link').href = `dashboard.html?classroom_id=${classroomId}`;
+                document.getElementById('back-link').href = 'classrooms.html';
+                document.getElementById('back-link').style.display = 'flex';
+                
+                // Update card titles and descriptions for classroom context
+                const quizCard = document.getElementById('quiz-setup-link');
+                quizCard.querySelector('h2').textContent = 'Create Quiz';
+                quizCard.querySelector('p').textContent = `Create and assign quizzes to ${classroom.member_count || 0} students in this classroom.`;
+                
+                const analyticsCard = document.getElementById('analytics-link');
+                analyticsCard.querySelector('h2').textContent = 'View Results';
+                analyticsCard.querySelector('p').textContent = 'Monitor student performance and learning gaps for this classroom.';
+                
+            } catch (error) {
+                document.getElementById('page-subtitle').textContent = '❌ Error loading classroom';
+                console.error('Error:', error);
+            }
+        }
+    </script>

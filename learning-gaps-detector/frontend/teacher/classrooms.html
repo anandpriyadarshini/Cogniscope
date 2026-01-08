@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #4f2b2b;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -508,6 +508,7 @@
                                 <span class="members-count">👥 ${classroom.member_count} Students</span>
                             </div>
                             <div class="classroom-actions">
+                                <button onclick="openClassroom('${classroom.classroom_id}')" class="btn btn-secondary">📖 Open Classroom</button>
                                 <button onclick="viewMembers('${classroom.classroom_id}', '${classroom.name}')" class="btn btn-secondary">View Members</button>
                             </div>
                         `;
@@ -565,6 +566,10 @@
             navigator.clipboard.writeText(text).then(() => {
                 showAlert('✅ Join code copied to clipboard!');
             });
+        }
+
+        function openClassroom(classroomId) {
+            window.location.href = `index.html?classroom_id=${classroomId}`;
         }
 
         // Load classrooms on page load

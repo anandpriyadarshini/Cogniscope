@@ -471,8 +471,8 @@
                                 <p><span class="info-label">Classmates:</span> ${classroom.member_count}</p>
                             </div>
                             <div class="classroom-actions">
+                                <button onclick="openClassroom('${classroom.classroom_id}')" class="btn btn-secondary">📖 View Quizzes</button>
                                 <button onclick="viewClassroom('${classroom.classroom_id}')" class="btn btn-secondary">View Details</button>
-                                <button onclick="startQuiz('${classroom.classroom_id}')" class="btn btn-secondary">📝 Take Quiz</button>
                             </div>
                         `;
                         container.appendChild(card);
@@ -515,6 +515,10 @@
 
         function startQuiz(classroomId) {
             showAlert('📝 Quiz feature coming soon!');
+        }
+
+        function openClassroom(classroomId) {
+            window.location.href = `classroom-quizzes.html?classroom_id=${classroomId}`;
         }
 
         function closeJoinModal() {

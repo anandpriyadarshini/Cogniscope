@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Report - Learning Gaps Detector</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .score-card {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .score-card .large-score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .score-card .score-label {
+            font-size: 1.2em;
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-card .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .answer-review {
+            margin-top: 30px;
+        }
+
+        .answer-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ddd;
+        }
+
+        .answer-item.correct {
+            border-left-color: #48bb78;
+            background: #f0fdf4;
+        }
+
+        .answer-item.incorrect {
+            border-left-color: #f56565;
+            background: #fef2f2;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 12px 0;
+        }
+
+        .your-answer {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .your-answer strong {
+            color: #667eea;
+        }
+
+        .correct-answer {
+            margin: 8px 0;
+            padding: 8px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            color: #155724;
+        }
+
+        .correct-answer strong {
+            color: #155724;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Quiz Report</h1>
+        </header>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading your report...</p>
+        </div>
+
+        <div id="report-content" class="hidden">
+            <!-- Score Card -->
+            <div class="section">
+                <div class="score-card">
+                    <p class="large-score" id="final-score">0%</p>
+                    <p class="score-label">Your Score</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Correct Answers</div>
+                        <div class="stat-value" id="correct-count">0/0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Time Taken</div>
+                        <div class="stat-value" id="time-taken">0s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg. Confidence</div>
+                        <div class="stat-value" id="avg-confidence">3/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Review -->
+            <div class="section">
+                <h2>Answer Review</h2>
+                <div id="answers-container">
+                    <!-- Answer items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button onclick="goBackToQuizzes()" class="btn btn-outline">← Back to Quizzes</button>
+                <button onclick="goToClassroom()" class="btn btn-primary">📚 Go to Classroom</button>
+            </div>
+        </div>
+
+        <div id="error-state" class="section hidden">
+            <div class="empty-state">
+                <p>❌ Could not load your quiz report</p>
+                <p id="error-message">Report not found</p>
+                <button onclick="goBackToQuizzes()" class="btn btn-primary" style="margin-top: 20px;">← Back to Quizzes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STUDENT_ID = localStorage.getItem('studentId');
+        
+        let quizId = null;
+        let classroomId = null;
+        let quizData = null;
+        let attemptData = null;
+
+        const params = new URLSearchParams(window.location.search);
+        quizId = params.get('quiz_id');
+        classroomId = params.get('classroom_id');
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('report-content').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+
+        function goBackToQuizzes() {
+            window.location.href = `classroom-quizzes.html?classroom_id=${classroomId}`;
+        }
+
+        function goToClassroom() {
+            window.location.href = `classrooms.html`;
+        }
+
+        async function loadReport() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+
+            try {
+                // Load quiz data
+                quizData = JSON.parse(localStorage.getItem(`quiz_${quizId}`));
+                if (!quizData) {
+                    showError('Quiz not found');
+                    return;
+                }
+
+                // Load attempt data
+                attemptData = JSON.parse(localStorage.getItem(`attempt_${quizId}_${STUDENT_ID}`));
+                if (!attemptData) {
+                    showError('Quiz attempt not found. Please take the quiz first.');
+                    return;
+                }
+
+                // Populate report
+                displayReport();
+                document.getElementById('report-content').classList.remove('hidden');
+
+            } catch (error) {
+                showError('Error loading report: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayReport() {
+            // Score
+            document.getElementById('final-score').textContent = attemptData.score + '%';
+            document.getElementById('correct-count').textContent = `${attemptData.correct_count}/${attemptData.total_questions}`;
+            
+            // Time
+            const totalSeconds = Math.round(attemptData.timeTaken.reduce((a, b) => a + b, 0));
+            document.getElementById('time-taken').textContent = formatTime(totalSeconds);
+
+            // Confidence
+            const avgConfidence = (attemptData.confidenceScores.reduce((a, b) => a + b, 0) / attemptData.confidenceScores.length).toFixed(1);
+            document.getElementById('avg-confidence').textContent = avgConfidence + '/5';
+
+            // Answer review
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = quizData.questions.map((question, idx) => {
+                const isCorrect = attemptData.answers[idx] === question.correct_answer;
+                const userAnswer = question.options[attemptData.answers[idx]];
+                const correctAnswer = question.options[question.correct_answer];
+
+                return `
+                    <div class="answer-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <p class="question-text">
+                            Q${idx + 1}. ${question.text}
+                            <span class="badge ${isCorrect ? 'badge-correct' : 'badge-incorrect'}">
+                                ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                            </span>
+                        </p>
+                        <div class="your-answer">
+                            <strong>Your Answer:</strong> ${userAnswer}
+                        </div>
+                        ${!isCorrect ? `<div class="correct-answer"><strong>Correct Answer:</strong> ${correctAnswer}</div>` : ''}
+                        <small style="color: #999;">
+                            Time: ${Math.round(attemptData.timeTaken[idx])}s | 
+                            Confidence: ${attemptData.confidenceScores[idx]}/5
+                        </small>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            if (minutes > 0) {
+                return `${minutes}m ${secs}s`;
+            }
+            return `${secs}s`;
+        }
+
+        // Load on page load
+        loadReport();
+    </script>
+</body>
+</html>

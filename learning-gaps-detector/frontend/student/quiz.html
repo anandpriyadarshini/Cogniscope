@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - Learning Gaps Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        header .subtitle {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .classroom-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .quiz-header {
+            margin-bottom: 30px;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .timer {
+            text-align: right;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        #question-text {
+            color: #333;
+            font-size: 1.4em;
+            margin: 0 0 20px 0;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f5f5f5;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            margin: 0;
+        }
+
+        .option.selected {
+            background: #e8f0fe;
+            border-color: #667eea;
+        }
+
+        .confidence-section {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .confidence-section h4 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .confidence-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .confidence-slider {
+            flex: 1;
+            min-width: 200px;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .confidence-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4);
+        }
+
+        .confidence-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4);
+        }
+
+        .confidence-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #666;
+            width: 100%;
+        }
+
+        .confidence-value {
+            color: #667eea;
+            font-weight: 600;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn.primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn.secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn.secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn.outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn.outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .completion-card {
+            text-align: center;
+        }
+
+        .completion-card h2 {
+            color: #48bb78;
+            font-size: 2.5em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-preview {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .results-preview h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-item.correct {
+            border-left-color: #48bb78;
+        }
+
+        .result-item.incorrect {
+            border-left-color: #f56565;
+        }
+
+        .error-card {
+            text-align: center;
+            color: #f56565;
+        }
+
+        .error-card h3 {
+            color: #f56565;
+            font-size: 1.8em;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .actions .btn {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            #question-text {
+                font-size: 1.2em;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .navigation .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Quiz</h1>
+            <p class="subtitle" id="quiz-title">Take your time and answer honestly. This helps us understand your learning better!</p>
+            <div class="classroom-info" id="classroom-info">
+                Loading classroom info...
+            </div>
+        </header>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="section">
+            <div class="quiz-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <span class="question-counter" id="question-counter">Question 1 of 5</span>
+                </div>
+                <div class="timer">
+                    <span id="question-timer">⏱️ 0s</span>
+                </div>
+            </div>
+
+            <div id="question-container">
+                <div class="question-card">
+                    <h3 id="question-text">Question will appear here...</h3>
+                    <div id="options-container" class="options">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="confidence-section">
+                    <h4>How confident are you in your answer?</h4>
+                    <div class="confidence-slider-container">
+                        <input type="range" id="confidence-slider" min="1" max="5" value="3" class="confidence-slider">
+                        <div class="confidence-labels">
+                            <span>Not Sure</span>
+                            <span>Very Confident</span>
+                        </div>
+                    </div>
+                    <div id="confidence-value" class="confidence-value">Confidence: 3/5</div>
+                </div>
+
+                <div class="navigation">
+                    <button id="prev-btn" class="btn outline" style="display: none;">← Previous</button>
+                    <button id="submit-answer-btn" class="btn primary" disabled>Submit Answer</button>
+                    <button id="next-btn" class="btn outline" style="display: none;">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Section -->
+        <div id="completion-section" class="section hidden">
+            <div class="completion-card">
+                <h2>🎉 Quiz Completed!</h2>
+                <p>Thank you for completing the assessment. Your responses are being analyzed...</p>
+                
+                <div id="analysis-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing your learning patterns...</p>
+                </div>
+
+                <div id="results-preview" class="results-preview hidden">
+                    <h3>Quick Results Preview</h3>
+                    <div id="results-content">
+                        <!-- Results will be shown here -->
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button onclick="goToReport()" class="btn secondary">📊 View Detailed Report</button>
+                    <button onclick="goBackToClassroom()" class="btn outline">← Back to Classroom</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div id="error-section" class="section hidden">
+            <div class="error-card">
+                <h3>⚠️ Something went wrong</h3>
+                <p id="error-message">An error occurred. Please try again.</p>
+                <button onclick="goBackToClassroom()" class="btn primary">← Back to Classroom</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        const STUDENT_ID = localStorage.getItem('studentId');
+        
+        let quizId = null;
+        let classroomId = null;
+        let quizData = null;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let confidenceScores = [];
+        let questionStartTime = 0;
+        let timeTaken = [];
+
+        // Get parameters from URL
+        const params = new URLSearchParams(window.location.search);
+        quizId = params.get('quiz_id');
+        classroomId = params.get('classroom_id');
+
+        if (!quizId || !classroomId) {
+            showError('Missing quiz or classroom information');
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('error-section').classList.remove('hidden');
+        }
+
+        async function loadQuiz() {
+            try {
+                // Load classroom info
+                const classroomResponse = await fetch(`${API_BASE}/classrooms/${classroomId}`);
+                if (classroomResponse.ok) {
+                    const classroom = await classroomResponse.json();
+                    document.getElementById('classroom-info').textContent = `${classroom.name} • Teacher: ${classroom.teacher_name}`;
+                }
+
+                // Load quiz from localStorage
+                quizData = JSON.parse(localStorage.getItem(`quiz_${quizId}`));
+                if (!quizData) {
+                    showError('Quiz not found');
+                    return;
+                }
+
+                questions = quizData.questions || [];
+                if (questions.length === 0) {
+                    showError('Quiz has no questions');
+                    return;
+                }
+
+                // Initialize arrays
+                answers = new Array(questions.length).fill(null);
+                confidenceScores = new Array(questions.length).fill(3);
+                timeTaken = new Array(questions.length).fill(0);
+
+                document.getElementById('quiz-title').textContent = quizData.name || 'Quiz';
+                
+                displayQuestion();
+                startQuestionTimer();
+
+            } catch (error) {
+                showError('Error loading quiz: ' + error.message);
+            }
+        }
+
+        function displayQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                completeQuiz();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('question-counter').textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            document.getElementById('question-text').textContent = question.text;
+
+            // Render options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = question.options.map((option, index) => `
+                <div class="option ${answers[currentQuestionIndex] === index ? 'selected' : ''}">
+                    <input type="radio" id="option-${index}" name="option" value="${index}" 
+                           ${answers[currentQuestionIndex] === index ? 'checked' : ''}
+                           onchange="selectOption(${index})">
+                    <label for="option-${index}">${option}</label>
+                </div>
+            `).join('');
+
+            // Set confidence score
+            document.getElementById('confidence-slider').value = confidenceScores[currentQuestionIndex];
+            updateConfidenceValue();
+
+            // Update button states
+            const submitBtn = document.getElementById('submit-answer-btn');
+            submitBtn.disabled = answers[currentQuestionIndex] === null;
+            submitBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'Submit Quiz' : 'Next Question';
+
+            // Show/hide navigation
+            document.getElementById('prev-btn').style.display = currentQuestionIndex > 0 ? 'block' : 'none';
+            document.getElementById('next-btn').style.display = currentQuestionIndex < questions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectOption(index) {
+            answers[currentQuestionIndex] = index;
+            document.getElementById('submit-answer-btn').disabled = false;
+        }
+
+        function updateConfidenceValue() {
+            const value = document.getElementById('confidence-slider').value;
+            confidenceScores[currentQuestionIndex] = parseInt(value);
+            document.getElementById('confidence-value').textContent = `Confidence: ${value}/5`;
+        }
+
+        function startQuestionTimer() {
+            questionStartTime = Date.now();
+        }
+
+        function nextQuestion() {
+            if (answers[currentQuestionIndex] === null) {
+                return;
+            }
+            
+            timeTaken[currentQuestionIndex] = (Date.now() - questionStartTime) / 1000;
+            currentQuestionIndex++;
+            displayQuestion();
+            startQuestionTimer();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                timeTaken[currentQuestionIndex] = (Date.now() - questionStartTime) / 1000;
+                currentQuestionIndex--;
+                displayQuestion();
+                startQuestionTimer();
+            }
+        }
+
+        function completeQuiz() {
+            timeTaken[currentQuestionIndex] = (Date.now() - questionStartTime) / 1000;
+            
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('completion-section').classList.remove('hidden');
+
+            // Calculate results
+            const correctCount = answers.reduce((count, answer, idx) => {
+                return answer === questions[idx].correct_answer ? count + 1 : count;
+            }, 0);
+
+            const score = Math.round((correctCount / questions.length) * 100);
+
+            // Store attempt
+            const attemptData = {
+                student_id: STUDENT_ID,
+                quiz_id: quizId,
+                classroom_id: classroomId,
+                answers: answers,
+                confidenceScores: confidenceScores,
+                timeTaken: timeTaken,
+                score: score,
+                correct_count: correctCount,
+                total_questions: questions.length,
+                completed_at: new Date().toISOString()
+            };
+
+            localStorage.setItem(`attempt_${quizId}_${STUDENT_ID}`, JSON.stringify(attemptData));
+
+            // Show results after 2 seconds
+            setTimeout(() => {
+                document.getElementById('analysis-loading').classList.add('hidden');
+                document.getElementById('results-preview').classList.remove('hidden');
+
+                const resultsContent = document.getElementById('results-content');
+                resultsContent.innerHTML = `
+                    <div class="result-item correct">
+                        <strong>Score: ${score}% (${correctCount}/${questions.length} correct)</strong>
+                    </div>
+                    <div class="result-item">
+                        <strong>Time Taken:</strong> ${Math.round(timeTaken.reduce((a, b) => a + b, 0))} seconds
+                    </div>
+                    <div class="result-item">
+                        <strong>Average Confidence:</strong> ${(confidenceScores.reduce((a, b) => a + b, 0) / confidenceScores.length).toFixed(1)}/5
+                    </div>
+                `;
+            }, 2000);
+        }
+
+        function goToReport() {
+            window.location.href = `quiz-report.html?quiz_id=${quizId}&classroom_id=${classroomId}`;
+        }
+
+        function goBackToClassroom() {
+            window.location.href = `classroom-quizzes.html?classroom_id=${classroomId}`;
+        }
+
+        // Event listeners
+        document.getElementById('submit-answer-btn').addEventListener('click', () => {
+            if (currentQuestionIndex === questions.length - 1) {
+                completeQuiz();
+            } else {
+                nextQuestion();
+            }
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+
+        document.getElementById('confidence-slider').addEventListener('input', updateConfidenceValue);
+
+        // Load quiz on page load
+        loadQuiz();
+    </script>
+</body>
+</html>
