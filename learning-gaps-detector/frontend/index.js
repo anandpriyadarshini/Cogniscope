@@ -1,3 +1,32 @@
+// =============================
+// Always use logged-in credentials for student info
+// =============================
+function getLoggedInStudentInfo() {
+    const studentId = localStorage.getItem('studentId');
+    const studentName = localStorage.getItem('studentName');
+    if (!studentId || !studentName) {
+        // If not set, force logout
+        window.location.href = 'login.html';
+        return null;
+    }
+    return { studentId, studentName };
+}
+
+// Example usage: Display student info in header (if present)
+document.addEventListener('DOMContentLoaded', function () {
+    const studentIdDisplay = document.getElementById('student-id-display');
+    const studentNameDisplay = document.getElementById('student-name-display');
+    // Only run student info logic if these elements exist (i.e., not on public pages)
+    if (studentIdDisplay || studentNameDisplay) {
+        const info = getLoggedInStudentInfo();
+        if (info) {
+            if (studentIdDisplay) studentIdDisplay.textContent = info.studentId;
+            if (studentNameDisplay) studentNameDisplay.textContent = info.studentName;
+        }
+    }
+});
+
+// Use info.studentId and info.studentName throughout the application for all API calls, data storage, and UI updates
 /* ============================================
    Cogniscope Authentication - JavaScript
    Handles form switching, validation, and API calls
@@ -188,6 +217,14 @@ function redirectTo(role) {
                 localStorage.setItem('user_role', data.user.role);
                 localStorage.setItem('user_name', data.user.name);
                 localStorage.setItem('user_email', data.user.email);
+                // Set studentName and studentId for students, teacherId and teacherName for teachers
+                if (data.user.role === 'student') {
+                    localStorage.setItem('studentName', data.user.name);
+                    localStorage.setItem('studentId', data.user.id || data.user.user_id || '');
+                } else if (data.user.role === 'teacher') {
+                    localStorage.setItem('teacherName', data.user.name);
+                    localStorage.setItem('teacherId', data.user.id || data.user.user_id || '');
+                }
             }
 
             // Show success message
@@ -196,9 +233,9 @@ function redirectTo(role) {
             // Redirect based on role
             setTimeout(() => {
                 if (role === 'student') {
-                    window.location.href = './student/index.html';
+                    window.location.href = './student/classrooms.html';
                 } else if (role === 'teacher') {
-                    window.location.href = './teacher/index.html';
+                    window.location.href = './teacher/classrooms.html';
                 }
             }, 1000);
         } else {

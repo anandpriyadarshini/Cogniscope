@@ -8,11 +8,8 @@ from datetime import datetime
 
 from models.quiz import StudentSubmission, Question, QuizAttempt
 from models.result import LearningGapResult
-<<<<<<< Updated upstream
 from models.classroom import Classroom, ClassroomCreate, JoinClassroomRequest, ClassroomResponse, ClassroomMember
-=======
 from models.auth import LoginRequest, SignupRequest, AuthResponse
->>>>>>> Stashed changes
 from logic.scoring import LearningGapScorer
 from logic.auth import AuthManager
 

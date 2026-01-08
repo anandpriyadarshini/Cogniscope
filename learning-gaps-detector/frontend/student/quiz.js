@@ -10,7 +10,7 @@ class QuizApp {
         this.selectedAnswer = null;
         this.authToken = null;
         this.userName = null;
-        
+
         this.checkAuthentication();
         this.initializeEventListeners();
     }
@@ -35,23 +35,20 @@ class QuizApp {
             greeting.textContent = `Welcome, ${this.userName}! 👋`;
         }
 
-        // Use email as student ID if not provided
-        const userEmail = localStorage.getItem('user_email');
-        if (userEmail) {
-            this.studentId = userEmail.split('@')[0];
+        // Always use studentId from localStorage (set at login)
+        const studentId = localStorage.getItem('studentId');
+        if (studentId) {
+            this.studentId = studentId;
+        } else {
+            // If not set, force logout
+            window.location.href = '../login.html';
         }
     }
 
     initializeEventListeners() {
-        // Login
-        document.getElementById('start-quiz-btn').addEventListener('click', () => this.startQuiz());
-        document.getElementById('student-id').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.startQuiz();
-        });
-
         // Quiz navigation
         document.getElementById('submit-answer-btn').addEventListener('click', () => this.submitAnswer());
-        
+
         // Confidence slider
         document.getElementById('confidence-slider').addEventListener('input', (e) => {
             document.getElementById('confidence-value').textContent = `Confidence: ${e.target.value}/5`;
@@ -64,16 +61,7 @@ class QuizApp {
     }
 
     async startQuiz() {
-        const studentIdInput = document.getElementById('student-id');
-        const studentId = studentIdInput.value.trim();
-
-        if (!studentId) {
-            alert('Please enter your Student ID');
-            return;
-        }
-
-        this.studentId = studentId;
-        
+        // No need to get studentId from input, always use authenticated session
         try {
             this.showSection('quiz-section');
             await this.loadQuestions();

@@ -325,7 +325,7 @@
         <div class="student-info">
             <div><strong>Student ID:</strong> <span id="student-id-display">-</span></div>
             <div><strong>Name:</strong> <span id="student-name-display">-</span></div>
-            <button onclick="logout()" class="btn btn-outline" style="padding: 8px 16px; margin-top: 10px;">🚪 Logout</button>
+            <button id="logout-btn" class="btn btn-outline" style="padding: 8px 16px; margin-top: 10px;">🚪 Logout</button>
         </div>
 
         <div class="content">
@@ -383,19 +383,19 @@
     <script>
         const API_BASE = 'http://localhost:8000/api';
         
-        // Get or create student info
+        // Always use student info from login/authentication
         let studentId = localStorage.getItem('studentId');
-        let studentName = localStorage.getItem('studentName');
+        let userName = localStorage.getItem('userName') || localStorage.getItem('user_name');
 
-        if (!studentId) {
-            studentId = 'student_' + Math.random().toString(36).substr(2, 9);
-            studentName = prompt('Enter your name:') || 'Student';
-            localStorage.setItem('studentId', studentId);
-            localStorage.setItem('studentName', studentName);
+        function updateStudentInfoUI() {
+            if (!studentId || !userName) {
+                // If not set, force logout
+                window.location.href = '../login.html';
+            }
+            document.getElementById('student-id-display').textContent = studentId;
+            document.getElementById('student-name-display').textContent = userName;
         }
-
-        document.getElementById('student-id-display').textContent = studentId;
-        document.getElementById('student-name-display').textContent = studentName;
+        updateStudentInfoUI();
 
         function showAlert(message, type = 'success') {
             const alertContainer = document.getElementById('alert-container');
@@ -418,7 +418,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         student_id: studentId,
-                        student_name: studentName,
+                        student_name: userName,
                         join_code: joinCode
                     })
                 });
@@ -525,13 +525,13 @@
             document.getElementById('join-code-modal').classList.remove('active');
         }
 
-        function logout() {
+        document.getElementById('logout-btn').addEventListener('click', function() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('studentId');
-                localStorage.removeItem('studentName');
-                location.reload();
+                localStorage.removeItem('userName');
+                window.location.href = '../login.html';
             }
-        }
+        });
 
         // Load classrooms on page load
         loadClassrooms();

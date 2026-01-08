@@ -203,14 +203,19 @@
     </div>
 
     <script>
-<<<<<<< Updated upstream
         const API_BASE = 'http://localhost:8000/api';
-        const TEACHER_ID = localStorage.getItem('teacherId') || 'teacher_001';
-        
+        const TEACHER_ID = localStorage.getItem('teacherId');
+        const TEACHER_NAME = localStorage.getItem('teacherName');
+
+        if (!TEACHER_ID || !TEACHER_NAME) {
+            // If not set, force logout
+            window.location.href = '../login.html';
+        }
+
         // Check if in classroom view
         const params = new URLSearchParams(window.location.search);
         const classroomId = params.get('classroom_id');
-        
+
         if (classroomId) {
             // In classroom view
             loadClassroomView();
@@ -257,47 +262,3 @@
             }
         }
     </script>
-=======
-        /**
-         * Check authentication and initialize page
-         */
-        function initializeTeacherPage() {
-            const authToken = localStorage.getItem('auth_token');
-            const userName = localStorage.getItem('user_name');
-            const userRole = localStorage.getItem('user_role');
-
-            if (!authToken || userRole !== 'teacher') {
-                // Redirect to login if not authenticated
-                window.location.href = '../login.html';
-                return;
-            }
-
-            // Update greeting with user name
-            const greeting = document.getElementById('user-greeting');
-            if (greeting && userName) {
-                greeting.textContent = `Welcome, ${userName}! 👋`;
-            }
-        }
-
-        /**
-         * Logout function (accessible globally)
-         */
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Clear localStorage
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user_role');
-                localStorage.removeItem('user_name');
-                localStorage.removeItem('user_email');
-                
-                // Redirect to login
-                window.location.href = '../login.html';
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', initializeTeacherPage);
-    </script>
-</body>
-</html>
->>>>>>> Stashed changes

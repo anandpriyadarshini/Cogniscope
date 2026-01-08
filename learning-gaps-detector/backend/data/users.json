@@ -7,7 +7,7 @@
     "role": "student",
     "subject": null,
     "created_at": "2026-01-08T14:58:04.532697",
-    "last_login": "2026-01-08T15:11:15.993988"
+    "last_login": "2026-01-08T19:20:24.549021"
   },
   {
     "id": "14af41b8-a803-4762-9c86-622af467e133",
@@ -27,6 +27,46 @@
     "role": "student",
     "subject": null,
     "created_at": "2026-01-08T15:19:11.363992",
+    "last_login": null
+  },
+  {
+    "id": "bea2712f-91ea-4211-b0fe-f7c9eba7eb06",
+    "name": "uhashini",
+    "email": "uhas@gmail.com",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "teacher",
+    "subject": "mathss",
+    "created_at": "2026-01-08T19:07:42.115692",
+    "last_login": "2026-01-08T19:22:26.269749"
+  },
+  {
+    "id": "ddf193c1-c3c9-4a6b-8f59-be8f2fd8d43d",
+    "name": "priya",
+    "email": "pri@gmail.com",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "student",
+    "subject": null,
+    "created_at": "2026-01-08T19:08:45.951200",
+    "last_login": null
+  },
+  {
+    "id": "9c82509c-d884-4220-8f5d-a5258a189249",
+    "name": "priya",
+    "email": "prii@gmail.com",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "teacher",
+    "subject": "mathss",
+    "created_at": "2026-01-08T19:09:56.307536",
+    "last_login": "2026-01-08T19:20:42.903149"
+  },
+  {
+    "id": "d6e4b39b-7f35-4c50-8f6d-b3ae2f39a490",
+    "name": "shit",
+    "email": "t@gmail.com",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "student",
+    "subject": null,
+    "created_at": "2026-01-08T19:21:44.022276",
     "last_login": null
   }
 ]

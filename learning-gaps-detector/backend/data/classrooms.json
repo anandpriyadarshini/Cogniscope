@@ -3,7 +3,7 @@
     "classroom_id": "1767861797674773",
     "teacher_id": "teacher_001",
     "teacher_name": "Mr. Johnson",
-    "name": "123",
+    "name": "<DYNAMIC_STUDENT_ID>",
     "description": "intro",
     "subject": "math",
     "join_code": "D4Y5JT",
@@ -54,6 +54,90 @@
         "student_id": "student_hmzw88g80",
         "student_name": "uha",
         "joined_at": "2026-01-08T14:18:41.964184"
+      }
+    ],
+    "quiz_ids": []
+  },
+  "1767879367079536": {
+    "classroom_id": "1767879367079536",
+    "teacher_id": "teacher_001",
+    "teacher_name": "Mr. Johnson",
+    "name": "123",
+    "description": "1234",
+    "subject": "math",
+    "join_code": "BIKLED",
+    "created_at": "2026-01-08T19:06:07.079609",
+    "members": [
+      {
+        "student_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+        "student_name": "Kanishka Senthilkumar",
+        "joined_at": "2026-01-08T19:06:17.053059"
+      }
+    ],
+    "quiz_ids": []
+  },
+  "1767880058740183": {
+    "classroom_id": "1767880058740183",
+    "teacher_id": "bea2712f-91ea-4211-b0fe-f7c9eba7eb06",
+    "teacher_name": "uhashini",
+    "name": "101",
+    "description": "dhfsjd",
+    "subject": "math",
+    "join_code": "8GK8FI",
+    "created_at": "2026-01-08T19:17:38.740340",
+    "members": [],
+    "quiz_ids": []
+  },
+  "1767880106083959": {
+    "classroom_id": "1767880106083959",
+    "teacher_id": "9c82509c-d884-4220-8f5d-a5258a189249",
+    "teacher_name": "priya",
+    "name": "jwdih",
+    "description": "32r3eiod",
+    "subject": "3r3f",
+    "join_code": "1DP0MK",
+    "created_at": "2026-01-08T19:18:26.084042",
+    "members": [
+      {
+        "student_id": "401977dd-5e70-4a29-83bc-77accc7c0cbf",
+        "student_name": "Kanishka Senthilkumar",
+        "joined_at": "2026-01-08T19:19:28.023245"
+      }
+    ],
+    "quiz_ids": []
+  },
+  "1767880256161205": {
+    "classroom_id": "1767880256161205",
+    "teacher_id": "9c82509c-d884-4220-8f5d-a5258a189249",
+    "teacher_name": "priya",
+    "name": "111",
+    "description": "dfasf",
+    "subject": "mammd",
+    "join_code": "Q69SMR",
+    "created_at": "2026-01-08T19:20:56.161304",
+    "members": [
+      {
+        "student_id": "d6e4b39b-7f35-4c50-8f6d-b3ae2f39a490",
+        "student_name": "shit",
+        "joined_at": "2026-01-08T19:21:54.888893"
+      }
+    ],
+    "quiz_ids": []
+  },
+  "1767880362104041": {
+    "classroom_id": "1767880362104041",
+    "teacher_id": "bea2712f-91ea-4211-b0fe-f7c9eba7eb06",
+    "teacher_name": "uhashini",
+    "name": "1fiuhe",
+    "description": "oggiva",
+    "subject": "dslv",
+    "join_code": "WKAAQL",
+    "created_at": "2026-01-08T19:22:42.104122",
+    "members": [
+      {
+        "student_id": "d6e4b39b-7f35-4c50-8f6d-b3ae2f39a490",
+        "student_name": "shit",
+        "joined_at": "2026-01-08T19:22:48.078946"
       }
     ],
     "quiz_ids": []

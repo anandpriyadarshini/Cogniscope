@@ -498,6 +498,12 @@ class TeacherDashboard {
 // Initialize dashboard when page loads
 let dashboard;
 document.addEventListener('DOMContentLoaded', () => {
+    const teacherId = localStorage.getItem('teacherId');
+    const teacherName = localStorage.getItem('teacherName');
+    if (!teacherId || !teacherName) {
+        window.location.href = '../login.html';
+        return;
+    }
     dashboard = new TeacherDashboard();
 });
 

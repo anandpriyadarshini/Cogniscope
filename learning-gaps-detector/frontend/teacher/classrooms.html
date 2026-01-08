@@ -422,12 +422,13 @@
 
     <script>
         const API_BASE = 'http://localhost:8000/api';
-        const TEACHER_ID = localStorage.getItem('teacherId') || 'teacher_001';
-        const TEACHER_NAME = localStorage.getItem('teacherName') || 'Mr. Johnson';
+        const TEACHER_ID = localStorage.getItem('teacherId');
+        const TEACHER_NAME = localStorage.getItem('teacherName');
 
-        // Store teacher info
-        localStorage.setItem('teacherId', TEACHER_ID);
-        localStorage.setItem('teacherName', TEACHER_NAME);
+        if (!TEACHER_ID || !TEACHER_NAME) {
+            // If not set, force logout
+            window.location.href = '../login.html';
+        }
 
         function showAlert(message, type = 'success') {
             const alertContainer = document.getElementById('alert-container');
